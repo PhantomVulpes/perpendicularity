@@ -78,14 +78,6 @@
             text
             class="w-full sm:w-auto"
           />
-          <Button
-            label="Back to Home"
-            icon="pi pi-home"
-            @click="router.push('/')"
-            severity="secondary"
-            text
-            class="w-full sm:w-auto"
-          />
         </div>
       </div>
     </div>

@@ -3,9 +3,9 @@
     <div class="container mx-auto px-4 py-3">
       <div class="flex items-center justify-between">
         <!-- Left: App Title -->
-        <div class="text-lg font-semibold text-gray-800">
+        <RouterLink to="/" class="text-lg font-semibold text-gray-800 hover:text-blue-600 transition-colors cursor-pointer">
           Shadesmar's Perpendicularity
-        </div>
+        </RouterLink>
         
         <!-- Right: Auth Actions or User Info -->
         <div v-if="isAuthenticated" class="flex items-center gap-3">

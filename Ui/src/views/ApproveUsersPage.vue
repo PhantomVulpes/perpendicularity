@@ -47,6 +47,21 @@
                   stripedRows
                   class="p-datatable-sm"
                 >
+                  <Column header="" style="width: 3rem">
+                    <template #body="slotProps">
+                      <Button
+                        icon="pi pi-key"
+                        v-tooltip.top="slotProps.data.key || 'No key'"
+                        @click="copyToClipboard(slotProps.data.key)"
+                        text
+                        rounded
+                        size="small"
+                        severity="secondary"
+                        class="hover:bg-gray-100 dark:hover:bg-gray-700"
+                        aria-label="Copy user key"
+                      />
+                    </template>
+                  </Column>
                   <Column field="firstName" header="First Name" sortable></Column>
                   <Column field="lastName" header="Last Name" sortable></Column>
                   <Column field="status" header="Status" sortable>
@@ -79,12 +94,6 @@
                         severity="success"
                         outlined
                       />
-                      <span v-else-if="slotProps.data.status === UserStatus._3" class="text-green-600 dark:text-green-400">
-                        <i class="pi pi-check-circle"></i> Approved
-                      </span>
-                      <span v-else-if="slotProps.data.status === UserStatus._4" class="text-blue-600 dark:text-blue-400">
-                        <i class="pi pi-shield"></i> Admin
-                      </span>
                       <span v-else class="text-gray-500 dark:text-gray-400">-</span>
                     </template>
                   </Column>
@@ -122,14 +131,6 @@
             text
             class="w-full sm:w-auto"
           />
-          <Button
-            label="Back to Home"
-            icon="pi pi-home"
-            @click="router.push('/')"
-            severity="secondary"
-            text
-            class="w-full sm:w-auto"
-          />
         </div>
       </div>
     </div>
@@ -139,6 +140,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useToast } from 'primevue/usetoast'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
@@ -151,6 +153,7 @@ import { getAllUsers } from '@/api/User/GetAllUsersQuery'
 import { approveUser } from '@/api/Admin/ApproveUserCommand'
 
 const router = useRouter()
+const toast = useToast()
 const { user, isAuthenticated } = useAuth()
 
 // Check if user is admin
@@ -206,6 +209,37 @@ const handleApproveUser = async (userToApprove: RegisteredUser) => {
     errorMessage.value = error.message || `Failed to approve ${userToApprove.displayName}. Please try again.`
   } finally {
     approvingUserId.value = null
+  }
+}
+
+// Copy to clipboard
+const copyToClipboard = async (text?: string) => {
+  if (!text) {
+    toast.add({
+      severity: 'warn',
+      summary: 'No Key',
+      detail: 'This user has no key to copy.',
+      life: 3000
+    })
+    return
+  }
+  
+  try {
+    await navigator.clipboard.writeText(text)
+    toast.add({
+      severity: 'success',
+      summary: 'Copied!',
+      detail: 'User key copied to clipboard.',
+      life: 2000
+    })
+  } catch (error) {
+    console.error('Failed to copy to clipboard:', error)
+    toast.add({
+      severity: 'error',
+      summary: 'Failed to Copy',
+      detail: 'Could not copy to clipboard. Please try again.',
+      life: 3000
+    })
   }
 }
 

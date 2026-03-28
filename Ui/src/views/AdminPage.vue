@@ -46,16 +46,6 @@
             </div>
           </template>
         </Card>
-
-        <!-- Back to Home Button -->
-        <Button
-          label="Back to Home"
-          icon="pi pi-arrow-left"
-          @click="router.push('/')"
-          severity="secondary"
-          text
-          class="w-full sm:w-auto"
-        />
       </div>
     </div>
   </div>
@@ -65,7 +55,6 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import Card from 'primevue/card'
-import Button from 'primevue/button'
 import Message from 'primevue/message'
 import { useAuth } from '@/services/auth'
 import { UserStatus } from '@/api/apiclients/PerpendicularityApiClient'

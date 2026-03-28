@@ -85,18 +85,6 @@
             @click="router.push('/register')"
             :disabled="loading"
           />
-
-          <!-- Back to Home Link -->
-          <Button
-            type="button"
-            label="Back to Home"
-            icon="pi pi-arrow-left"
-            severity="secondary"
-            text
-            class="w-full"
-            @click="router.push('/')"
-            :disabled="loading"
-          />
         </form>
       </template>
     </Card>
