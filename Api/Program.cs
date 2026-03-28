@@ -65,7 +65,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:62003") // Vite dev server port
+        policy.WithOrigins("http://localhost:63003") // Vite dev server port
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
