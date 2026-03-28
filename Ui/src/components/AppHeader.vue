@@ -9,6 +9,19 @@
         
         <!-- Right: Auth Actions or User Info -->
         <div v-if="isAuthenticated" class="flex items-center gap-3">
+          <!-- Admin Button (only shown for administrators) -->
+          <Button
+            v-if="isAdmin"
+            label="Admin Stuff"
+            icon="pi pi-shield"
+            @click="router.push('/admin')"
+            severity="info"
+            outlined
+            size="small"
+            aria-label="Admin Dashboard"
+            class="pr-4"
+          />
+
           <div class="text-right">
             <div class="font-semibold text-gray-800">{{ fullName }}</div>
             <div class="flex items-center justify-end gap-1 text-xs font-medium" :class="statusClasses">
@@ -16,18 +29,6 @@
               <span>{{ statusText }}</span>
             </div>
           </div>
-          
-          <!-- Admin Button (only shown for administrators) -->
-          <Button
-            v-if="isAdmin"
-            label="Admin"
-            icon="pi pi-shield"
-            @click="router.push('/admin')"
-            severity="info"
-            outlined
-            size="small"
-            aria-label="Admin Dashboard"
-          />
           
           <Button
             icon="pi pi-sign-out"
