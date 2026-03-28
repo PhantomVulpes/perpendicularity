@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
+import { useAuth } from '@/services/auth'
 
 const router = useRouter()
+const { isAuthenticated, user } = useAuth()
 const count = ref(0)
-const message = ref('Welcome to Perpendicularity')
+const message = computed(() => 
+  isAuthenticated.value 
+    ? `Welcome back, ${user.value?.displayName || user.value?.firstName}!` 
+    : 'Welcome to Perpendicularity'
+)
 
 const increment = () => {
   count.value++
@@ -52,13 +58,25 @@ const goToRegister = () => {
                 severity="primary"
                 class="w-full"
               />
-              <Button 
-                @click="goToRegister" 
-                label="Register New User" 
-                icon="pi pi-user-plus" 
-                severity="secondary"
-                class="w-full"
-              />
+              <div v-if="!isAuthenticated" class="flex flex-col gap-2 w-full">
+                <Button 
+                  @click="goToRegister" 
+                  label="Register New User" 
+                  icon="pi pi-user-plus" 
+                  severity="secondary"
+                  class="w-full"
+                />
+                <Button 
+                  @click="router.push('/login')" 
+                  label="Sign In" 
+                  icon="pi pi-sign-in" 
+                  severity="primary"
+                  class="w-full"
+                />
+              </div>
+              <div v-else class="text-center text-gray-600 dark:text-gray-400">
+                <p>You are signed in!</p>
+              </div>
             </div>
           </template>
         </Card>

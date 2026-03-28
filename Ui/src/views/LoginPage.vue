@@ -3,28 +3,17 @@
     <Card class="w-full max-w-md">
       <template #title>
         <div class="flex items-center gap-2 text-2xl">
-          <i class="pi pi-user-plus text-primary"></i>
-          Register New User
+          <i class="pi pi-sign-in text-primary"></i>
+          Sign In
         </div>
       </template>
       
       <template #content>
-        <form @submit.prevent="handleRegister" class="flex flex-col gap-4">
+        <form @submit.prevent="handleLogin" class="flex flex-col gap-4">
           <!-- Success Message -->
           <Message v-if="success" severity="success" :closable="false">
-            Registration submitted! Your access is restricted until you are approved by an admin.
+            Welcome back, {{ userDisplayName }}!
           </Message>
-          
-          <!-- Success Actions -->
-          <div v-if="success" class="flex flex-col gap-2">
-            <Button
-              label="Go to Sign In"
-              icon="pi pi-sign-in"
-              severity="success"
-              @click="router.push('/login')"
-              class="w-full"
-            />
-          </div>
 
           <!-- Error Message -->
           <Message v-if="error" severity="error" :closable="true" @close="error = ''">
@@ -78,11 +67,23 @@
           <!-- Submit Button -->
           <Button
             type="submit"
-            label="Register"
-            icon="pi pi-user-plus"
+            label="Sign In"
+            icon="pi pi-sign-in"
             :loading="loading"
             severity="primary"
             class="w-full mt-2"
+          />
+
+          <!-- Register Link -->
+          <Button
+            type="button"
+            label="Don't have an account? Register"
+            icon="pi pi-user-plus"
+            severity="secondary"
+            text
+            class="w-full"
+            @click="router.push('/register')"
+            :disabled="loading"
           />
 
           <!-- Back to Home Link -->
@@ -110,9 +111,11 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
-import { RegisterUser } from '@/api/User/RegisterUserCommand'
+import { LoginUser } from '@/api/User/LoginUserQuery'
+import { useAuth } from '@/services/auth'
 
 const router = useRouter()
+const { signIn } = useAuth()
 
 // Form fields
 const firstName = ref('')
@@ -123,10 +126,11 @@ const password = ref('')
 const loading = ref(false)
 const error = ref('')
 const success = ref(false)
-const userId = ref('')
+const userDisplayName = ref('')
 
-const handleRegister = async () => {
+const handleLogin = async () => {
   error.value = ''
+  success.value = false
   
   // Basic validation
   if (!firstName.value || !lastName.value || !password.value) {
@@ -137,21 +141,22 @@ const handleRegister = async () => {
   loading.value = true
 
   try {
-    const newUserId = await RegisterUser(firstName.value, lastName.value, password.value);
+    const user = await LoginUser(firstName.value, lastName.value, password.value);
     
-    userId.value = newUserId
+    // Store user session
+    signIn(user)
+    
+    userDisplayName.value = user.displayName || `${user.firstName} ${user.lastName}`
     success.value = true
     
-    // Reset form
-    firstName.value = ''
-    lastName.value = ''
-    password.value = ''
-    
-    // Show the message and button.
+    // Reset form after a delay and redirect
+    setTimeout(() => {
+      router.push('/')
+    }, 1500)
     
   } catch (err: any) {
-    console.error('Registration error:', err)
-    error.value = err.message || 'Registration failed. Please try again.'
+    console.error('Login error:', err)
+    error.value = err.message || 'Login failed. Please check your credentials and try again.'
   } finally {
     loading.value = false
   }
