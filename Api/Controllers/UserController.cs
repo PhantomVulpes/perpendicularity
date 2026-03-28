@@ -44,4 +44,15 @@ public class UserController : PerpendicularityController
 
         return Ok(response);
     }
+
+    [HttpGet("all")]
+    [Authorize(Roles = nameof(UserStatus.Admin))]
+    [ProducesResponseType(typeof(List<RegisteredUser>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<RegisteredUser>>> GetAllUsersAsync()
+    {
+        var query = new GetAllUsersQuery(RegisteredUser.Key);
+        var users = await mediator.RequestResponseAsync<GetAllUsersQuery, IQueryable<RegisteredUser>>(query);
+
+        return Ok(users.ToList());
+    }
 }
