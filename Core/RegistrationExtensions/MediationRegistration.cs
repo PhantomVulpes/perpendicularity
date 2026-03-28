@@ -1,8 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Vulpes.Electrum.Domain.Commanding;
 using Vulpes.Electrum.Domain.Mediation;
+using Vulpes.Electrum.Domain.Querying;
 using Vulpes.Electrum.Domain.Security;
 using Vulpes.Perpendicularity.Core.Commands;
+using Vulpes.Perpendicularity.Core.Models;
+using Vulpes.Perpendicularity.Core.Queries;
 
 namespace Vulpes.Perpendicularity.Core.RegistrationExtensions;
 
@@ -19,7 +22,9 @@ public static class MediationRegistration
         .AddTransient<CommandHandler<RegisterNewUserCommand>, RegisterNewUserCommandHandler>()
         ;
 
-    private static IServiceCollection InjectQueries(this IServiceCollection services) => services;
+    private static IServiceCollection InjectQueries(this IServiceCollection services) => services
+        .AddTransient<QueryHandler<GetUserByLoginCredentialsQuery, RegisteredUser>, GetUserByLoginCredentialsQueryHandler>()
+        ;
 
     private static IServiceCollection InjectMediator(this IServiceCollection services)
     {
@@ -33,7 +38,7 @@ public static class MediationRegistration
 
             _ = mediator
                 // For reference when I make a query.
-                // .Register(provider.GetRequiredService<QueryHandler<GetUserByLoginCredentials, ZincUser>>())
+                .Register(provider.GetRequiredService<QueryHandler<GetUserByLoginCredentialsQuery, RegisteredUser>>())
                 ;
 
             return mediator;
