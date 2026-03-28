@@ -27,3 +27,6 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+
+# Generated API clients
+src/api/apiclients/PerpendicularityApiClient.ts

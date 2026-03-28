@@ -46,7 +46,7 @@ npm run preview
 ## Project Structure
 
 ```
-Web/
+Ui/
 ├── src/
 │   ├── App.vue          # Main application component
 │   ├── main.ts          # Application entry point
@@ -65,7 +65,7 @@ Web/
 The Vite development server is configured with a proxy to forward API requests to the .NET backend:
 
 - Frontend: `http://localhost:62003/`
-- API Proxy: Requests to `/api/*` are forwarded to `http://localhost:5000/api/*`
+- API Proxy: Requests to `/api/*` are forwarded to `http://localhost:62000/api/*`
 
 ## Features
 
