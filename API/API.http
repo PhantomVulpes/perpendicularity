@@ -1,0 +1,6 @@
+@Perpendicularity_HostAddress = http://localhost:5101
+
+GET {{Perpendicularity_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,7 @@
+<Project>
+   <PropertyGroup>
+    <AssemblyName>Vulpes.Perpendicularity.$(MSBuildProjectName)</AssemblyName>
+    <version>1.0.0</version>
+    <RootNamespace>Vulpes.Perpendicularity.$(MSBuildProjectName)</RootNamespace>
+   </PropertyGroup>
+</Project>

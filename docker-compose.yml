@@ -1,0 +1,16 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: perpendicularity-mongo
+    restart: always
+    hostname: perpendicularity-mongo
+    command: --oplogSize 128 --bind_ip_all --port 63002
+    volumes:
+      - perpendicularity-mongo_data:/data/db
+      - perpendicularity-mongo_configdb:/data/configdb
+    ports:
+      - "63002:63002"
+
+volumes:
+  perpendicularity-mongo_data:
+  perpendicularity-mongo_configdb:
