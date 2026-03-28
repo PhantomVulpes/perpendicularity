@@ -18,24 +18,29 @@ export class Client {
     }
 
     /**
+     * @param body (optional) 
      * @return OK
      */
-    health(): Promise<void> {
-        let url_ = this.baseUrl + "/api/Health";
+    register(body: RegisterNewUserRequest | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/user/register";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
-            method: "GET",
+            body: content_,
+            method: "POST",
             headers: {
+                "Content-Type": "application/json",
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processHealth(_response);
+            return this.processRegister(_response);
         });
     }
 
-    protected processHealth(response: Response): Promise<void> {
+    protected processRegister(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -49,6 +54,50 @@ export class Client {
         }
         return Promise.resolve<void>(null as any);
     }
+}
+
+export class RegisterNewUserRequest implements IRegisterNewUserRequest {
+    firstName?: string | null;
+    lastName?: string | null;
+    passwordHash?: string | null;
+
+    constructor(data?: IRegisterNewUserRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.firstName = _data["firstName"] !== undefined ? _data["firstName"] : null as any;
+            this.lastName = _data["lastName"] !== undefined ? _data["lastName"] : null as any;
+            this.passwordHash = _data["passwordHash"] !== undefined ? _data["passwordHash"] : null as any;
+        }
+    }
+
+    static fromJS(data: any): RegisterNewUserRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterNewUserRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["firstName"] = this.firstName !== undefined ? this.firstName : null as any;
+        data["lastName"] = this.lastName !== undefined ? this.lastName : null as any;
+        data["passwordHash"] = this.passwordHash !== undefined ? this.passwordHash : null as any;
+        return data;
+    }
+}
+
+export interface IRegisterNewUserRequest {
+    firstName?: string | null;
+    lastName?: string | null;
+    passwordHash?: string | null;
 }
 
 export class ApiException extends Error {

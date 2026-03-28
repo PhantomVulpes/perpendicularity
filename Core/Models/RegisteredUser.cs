@@ -5,7 +5,8 @@ public record RegisteredUser : AggregateRoot
     public static RegisteredUser Empty { get; } = new();
     public static RegisteredUser Default => Empty with
     {
-        Key = Guid.NewGuid()
+        Key = Guid.NewGuid(),
+        CreationDate = DateTimeOffset.UtcNow,
     };
 
     public string FirstName { get; init; } = string.Empty;
@@ -19,6 +20,9 @@ public record RegisteredUser : AggregateRoot
     public string PasswordHash { get; init; } = string.Empty;
 
     public UserStatus Status { get; init; } = UserStatus.Unknown;
+
+    public DateTimeOffset CreationDate { get; init; } = DateTimeOffset.MinValue;
+    public DateTimeOffset LastLoginDate { get; init; } = DateTimeOffset.MinValue;
 }
 
 public enum UserStatus

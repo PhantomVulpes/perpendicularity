@@ -6,7 +6,7 @@ using Vulpes.Perpendicularity.Core.Models;
 
 namespace Vulpes.Perpendicularity.Core.Commands;
 
-public record RegisterNewUserCommand(string FirstName, string LastName) : Command;
+public record RegisterNewUserCommand(Guid Key, string FirstName, string LastName, string PasswordHash) : Command;
 public class RegisterNewUserCommandHandler : CommandHandler<RegisterNewUserCommand>
 {
     private readonly IModelRepository<RegisteredUser> registeredUserModelRepository;
@@ -20,9 +20,11 @@ public class RegisterNewUserCommandHandler : CommandHandler<RegisterNewUserComma
     {
         var newUser = RegisteredUser.Default with
         {
+            Key = command.Key,
             FirstName = command.FirstName,
             LastName = command.LastName,
-            Status = UserStatus.Unapproved
+            PasswordHash = command.PasswordHash,
+            Status = UserStatus.Unapproved,
         };
 
         // TODO: Electrum should get the Save, Insert, and Validation models for this.
