@@ -22,6 +22,16 @@ const routes: RouteRecordRaw[] = [
     path: '/admin',
     name: 'Admin',
     component: () => import('../views/AdminPage.vue')
+  },
+  {
+    path: '/admin/settings',
+    name: 'ApplicationSettings',
+    component: () => import('../views/ApplicationSettingsPage.vue')
+  },
+  {
+    path: '/admin/approve-users',
+    name: 'ApproveUsers',
+    component: () => import('../views/ApproveUsersPage.vue')
   }
 ]
 

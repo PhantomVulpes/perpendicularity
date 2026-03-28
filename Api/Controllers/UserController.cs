@@ -42,6 +42,8 @@ public class UserController : PerpendicularityController
 
         var response = LoginResponse.FromRegisteredUser(user, token);
 
+        // TODO: Update last login time.
+
         return Ok(response);
     }
 

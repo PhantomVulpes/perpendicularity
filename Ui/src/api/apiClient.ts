@@ -1,7 +1,9 @@
 import { Client } from './apiclients/PerpendicularityApiClient'
 import { useAuth } from '@/services/auth'
 
-const API_BASE_URL = 'http://localhost:63000'
+// Use empty string to make requests relative to current origin
+// This allows Vite's proxy to handle the requests in development
+const API_BASE_URL = ''
 
 /**
  * Creates an authenticated API client with the current user's token
