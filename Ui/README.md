@@ -65,7 +65,7 @@ Ui/
 The Vite development server is configured with a proxy to forward API requests to the .NET backend:
 
 - Frontend: `http://localhost:62003/`
-- API Proxy: Requests to `/api/*` are forwarded to `http://localhost:62000/api/*`
+- API Proxy: Requests to `/api/*` are forwarded to `http://localhost:63000/api/*`
 
 ## Features
 

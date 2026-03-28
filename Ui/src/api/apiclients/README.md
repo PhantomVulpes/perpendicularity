@@ -4,7 +4,7 @@ This directory contains the NSwag configuration for generating TypeScript API cl
 
 ## How It Works
 
-1. **Start the API**: Make sure your .NET API is running (usually at `http://localhost:62000`)
+1. **Start the API**: Make sure your .NET API is running (usually at `http://localhost:63000`)
 2. **Generate Client**: Run `npm run build-perpendicularity-api-client`
 3. **Use the Client**: Import from `./PerpendicularityApiClient.ts`
 
@@ -12,7 +12,7 @@ This directory contains the NSwag configuration for generating TypeScript API cl
 
 The `PerpendicularityApi.nswag` file configures how the TypeScript client is generated:
 
-- **Source**: Points to `http://localhost:62000/swagger/v1/swagger.json`
+- **Source**: Points to `http://localhost:63000/swagger/v1/swagger.json`
 - **Output**: Generates `PerpendicularityApiClient.ts` in this directory
 - **Template**: Uses Fetch API for HTTP requests
 - **Type Style**: Generates TypeScript classes and enums
@@ -23,7 +23,7 @@ The `PerpendicularityApi.nswag` file configures how the TypeScript client is gen
 import { HealthClient } from '@/api/apiclients/PerpendicularityApiClient'
 
 // Create client instance
-const healthClient = new HealthClient('http://localhost:62000')
+const healthClient = new HealthClient('http://localhost:63000')
 
 // Call API endpoint
 const health = await healthClient.get()

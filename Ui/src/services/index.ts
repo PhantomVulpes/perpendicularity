@@ -1,4 +1,4 @@
-import { api } from './api'
+import { Client } from '@/api/apiclients/PerpendicularityApiClient'
 
 /**
  * Example service for health check endpoint
@@ -7,14 +7,15 @@ export const healthService = {
   /**
    * Check API health status
    */
-  async checkHealth(): Promise<{ status: string; timestamp?: string }> {
-    const { data, error } = await api.get<{ status: string; timestamp?: string }>('/health')
-    
-    if (error) {
+  async checkHealth(): Promise<{ status: string }> {
+    try {
+      const client = new Client('http://localhost:63000')
+      await client.health()
+      return { status: 'healthy' }
+    } catch (error) {
+      console.error('Health check failed:', error)
       throw new Error(`Health check failed: ${error}`)
     }
-
-    return data || { status: 'unknown' }
   },
 }
 

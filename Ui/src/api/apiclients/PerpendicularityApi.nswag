@@ -1,9 +1,9 @@
 {
-  "runtime": "Net80",
+  "runtime": "Net90",
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
-      "url": "http://localhost:62000/swagger/v1/swagger.json",
+      "url": "http://localhost:63000/swagger/v1/swagger.json",
       "output": null,
       "newLineBehavior": "Auto"
     }
