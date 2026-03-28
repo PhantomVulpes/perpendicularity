@@ -1,85 +1,27 @@
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import Button from 'primevue/button'
-import Card from 'primevue/card'
-import { useAuth } from '@/services/auth'
-
-const router = useRouter()
-const { isAuthenticated, user } = useAuth()
-const count = ref(0)
-const message = computed(() => 
-  isAuthenticated.value 
-    ? `Welcome back, ${user.value?.displayName || user.value?.firstName}!` 
-    : 'Welcome to Perpendicularity'
-)
-
-const increment = () => {
-  count.value++
-}
-
-const goToRegister = () => {
-  router.push('/register')
-}
-</script>
-
 <template>
   <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-    <div class="container mx-auto px-4 py-8">
-      <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-2">
-          {{ message }}
-        </h1>
-        <p class="text-gray-600 dark:text-gray-300">
-          Vue 3 + TypeScript + Tailwind CSS + PrimeVue
-        </p>
-      </div>
+    <div class="container mx-auto px-4 py-12">
+      <div class="max-w-4xl mx-auto">
+        <!-- Description Section -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 mb-8">
+          <div class="prose prose-lg max-w-none dark:prose-invert">
+            <h1>About</h1>
+            <h2>Shadesmar</h2>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              Shadesmar is the central server hosting all storage and applications. Named after Brandon Sanderson's fictional location, it serves as the connecting point, linking everything together in a single PC.
+            </p>
 
-      <div class="flex justify-center gap-4">
-        <Card class="w-full max-w-md">
-          <template #title>
-            <div class="flex items-center gap-2">
-              <i class="pi pi-sparkles text-primary"></i>
-              Getting Started
-            </div>
-          </template>
-          <template #content>
-            <div class="flex flex-col items-center gap-4">
-              <p class="text-center text-gray-600 dark:text-gray-400">
-                Click the button to test the counter
-              </p>
-              <div class="text-2xl font-bold text-primary">
-                Count: {{ count }}
-              </div>
-              <Button 
-                @click="increment" 
-                label="Increment" 
-                icon="pi pi-plus" 
-                severity="primary"
-                class="w-full"
-              />
-              <div v-if="!isAuthenticated" class="flex flex-col gap-2 w-full">
-                <Button 
-                  @click="goToRegister" 
-                  label="Register New User" 
-                  icon="pi pi-user-plus" 
-                  severity="secondary"
-                  class="w-full"
-                />
-                <Button 
-                  @click="router.push('/login')" 
-                  label="Sign In" 
-                  icon="pi pi-sign-in" 
-                  severity="primary"
-                  class="w-full"
-                />
-              </div>
-              <div v-else class="text-center text-gray-600 dark:text-gray-400">
-                <p>You are signed in!</p>
-              </div>
-            </div>
-          </template>
-        </Card>
+            <h2>Perpendicularity</h2>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+              This is Perpendicularity, a web portal that allows you to access the available storage within Shadesmar. As an approved user, you are able to download and upload content directly, request new content to be added, browse through user-tagged files, get alerted of new content, and more.
+            </p>
+          </div>
+        </div>
+
+        <!-- Tech Stack Footer -->
+        <div class="text-center text-sm text-gray-500 dark:text-gray-400">
+          Vue3, PrimeVue, Tailwind
+        </div>
       </div>
     </div>
   </div>

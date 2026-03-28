@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import AppHeader from './components/AppHeader.vue'
+import AppFooter from './components/AppFooter.vue'
 </script>
 
 <template>
-  <div>
+  <div class="flex flex-col min-h-screen">
     <AppHeader />
-    <router-view />
+    <main class="flex-1">
+      <router-view />
+    </main>
+    <AppFooter />
   </div>
 </template>
 

@@ -18,6 +18,39 @@ export class Client {
     }
 
     /**
+     * @return OK
+     */
+    initializeSettings(): Promise<void> {
+        let url_ = this.baseUrl + "/api/admin/initialize-settings";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processInitializeSettings(_response);
+        });
+    }
+
+    protected processInitializeSettings(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @param body (optional) 
      * @return OK
      */
@@ -64,7 +97,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    login(body: LoginRequest | undefined): Promise<RegisteredUser> {
+    login(body: LoginRequest | undefined): Promise<LoginResponse> {
         let url_ = this.baseUrl + "/api/user/login";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -84,14 +117,14 @@ export class Client {
         });
     }
 
-    protected processLogin(response: Response): Promise<RegisteredUser> {
+    protected processLogin(response: Response): Promise<LoginResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RegisteredUser.fromJS(resultData200);
+            result200 = LoginResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -99,44 +132,8 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<RegisteredUser>(null as any);
+        return Promise.resolve<LoginResponse>(null as any);
     }
-}
-
-export class HashedString implements IHashedString {
-    value?: string | null;
-
-    constructor(data?: IHashedString) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.value = _data["value"] !== undefined ? _data["value"] : null as any;
-        }
-    }
-
-    static fromJS(data: any): HashedString {
-        data = typeof data === 'object' ? data : {};
-        let result = new HashedString();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["value"] = this.value !== undefined ? this.value : null as any;
-        return data;
-    }
-}
-
-export interface IHashedString {
-    value?: string | null;
 }
 
 export class LoginRequest implements ILoginRequest {
@@ -183,6 +180,62 @@ export interface ILoginRequest {
     passwordRaw?: string | null;
 }
 
+export class LoginResponse implements ILoginResponse {
+    token?: string | null;
+    userKey?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    displayName?: string | null;
+    status?: UserStatus;
+
+    constructor(data?: ILoginResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.token = _data["token"] !== undefined ? _data["token"] : null as any;
+            this.userKey = _data["userKey"] !== undefined ? _data["userKey"] : null as any;
+            this.firstName = _data["firstName"] !== undefined ? _data["firstName"] : null as any;
+            this.lastName = _data["lastName"] !== undefined ? _data["lastName"] : null as any;
+            this.displayName = _data["displayName"] !== undefined ? _data["displayName"] : null as any;
+            this.status = _data["status"] !== undefined ? _data["status"] : null as any;
+        }
+    }
+
+    static fromJS(data: any): LoginResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoginResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["token"] = this.token !== undefined ? this.token : null as any;
+        data["userKey"] = this.userKey !== undefined ? this.userKey : null as any;
+        data["firstName"] = this.firstName !== undefined ? this.firstName : null as any;
+        data["lastName"] = this.lastName !== undefined ? this.lastName : null as any;
+        data["displayName"] = this.displayName !== undefined ? this.displayName : null as any;
+        data["status"] = this.status !== undefined ? this.status : null as any;
+        return data;
+    }
+}
+
+export interface ILoginResponse {
+    token?: string | null;
+    userKey?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    displayName?: string | null;
+    status?: UserStatus;
+}
+
 export class RegisterNewUserRequest implements IRegisterNewUserRequest {
     firstName?: string | null;
     lastName?: string | null;
@@ -225,74 +278,6 @@ export interface IRegisterNewUserRequest {
     firstName?: string | null;
     lastName?: string | null;
     passwordRaw?: string | null;
-}
-
-export class RegisteredUser implements IRegisteredUser {
-    key?: string;
-    editingToken?: string | null;
-    firstName?: string | null;
-    lastName?: string | null;
-    readonly displayName?: string | null;
-    passwordHash?: HashedString;
-    status?: UserStatus;
-    creationDate?: Date;
-    lastLoginDate?: Date;
-
-    constructor(data?: IRegisteredUser) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.key = _data["key"] !== undefined ? _data["key"] : null as any;
-            this.editingToken = _data["editingToken"] !== undefined ? _data["editingToken"] : null as any;
-            this.firstName = _data["firstName"] !== undefined ? _data["firstName"] : null as any;
-            this.lastName = _data["lastName"] !== undefined ? _data["lastName"] : null as any;
-            (this as any).displayName = _data["displayName"] !== undefined ? _data["displayName"] : null as any;
-            this.passwordHash = _data["passwordHash"] ? HashedString.fromJS(_data["passwordHash"]) : null as any;
-            this.status = _data["status"] !== undefined ? _data["status"] : null as any;
-            this.creationDate = _data["creationDate"] ? new Date(_data["creationDate"].toString()) : null as any;
-            this.lastLoginDate = _data["lastLoginDate"] ? new Date(_data["lastLoginDate"].toString()) : null as any;
-        }
-    }
-
-    static fromJS(data: any): RegisteredUser {
-        data = typeof data === 'object' ? data : {};
-        let result = new RegisteredUser();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["key"] = this.key !== undefined ? this.key : null as any;
-        data["editingToken"] = this.editingToken !== undefined ? this.editingToken : null as any;
-        data["firstName"] = this.firstName !== undefined ? this.firstName : null as any;
-        data["lastName"] = this.lastName !== undefined ? this.lastName : null as any;
-        data["displayName"] = this.displayName !== undefined ? this.displayName : null as any;
-        data["passwordHash"] = this.passwordHash ? this.passwordHash.toJSON() : null as any;
-        data["status"] = this.status !== undefined ? this.status : null as any;
-        data["creationDate"] = this.creationDate ? this.creationDate.toISOString() : null as any;
-        data["lastLoginDate"] = this.lastLoginDate ? this.lastLoginDate.toISOString() : null as any;
-        return data;
-    }
-}
-
-export interface IRegisteredUser {
-    key?: string;
-    editingToken?: string | null;
-    firstName?: string | null;
-    lastName?: string | null;
-    displayName?: string | null;
-    passwordHash?: HashedString;
-    status?: UserStatus;
-    creationDate?: Date;
-    lastLoginDate?: Date;
 }
 
 export enum UserStatus {

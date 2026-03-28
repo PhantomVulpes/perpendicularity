@@ -1,4 +1,5 @@
-import { Client, RegisterNewUserRequest } from '../apiclients/PerpendicularityApiClient'
+import { RegisterNewUserRequest } from '../apiclients/PerpendicularityApiClient'
+import { createClient } from '../apiClient'
 
 export async function RegisterUser(firstName: string, lastName: string, password: string) {
     const request = new RegisterNewUserRequest({
@@ -7,6 +8,6 @@ export async function RegisterUser(firstName: string, lastName: string, password
         passwordRaw: password
     })
 
-    const client = new Client('http://localhost:63000');
+    const client = createClient()
     return await client.register(request)
 }

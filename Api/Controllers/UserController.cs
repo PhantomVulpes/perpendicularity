@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vulpes.Electrum.Domain.Mediation;
 using Vulpes.Perpendicularity.Api.RequestModels;
+using Vulpes.Perpendicularity.Api.Services;
 using Vulpes.Perpendicularity.Core.Models;
 using Vulpes.Perpendicularity.Core.Queries;
 
@@ -9,13 +11,16 @@ namespace Vulpes.Perpendicularity.Api.Controllers;
 public class UserController : PerpendicularityController
 {
     private readonly IMediator mediator;
+    private readonly IJwtTokenService jwtTokenService;
 
-    public UserController(IMediator mediator)
+    public UserController(IMediator mediator, IJwtTokenService jwtTokenService)
     {
         this.mediator = mediator;
+        this.jwtTokenService = jwtTokenService;
     }
 
     [HttpPost("register")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public async Task<ActionResult<string>> RegisterUserAsync(RegisterNewUserRequest request)
     {
@@ -26,12 +31,17 @@ public class UserController : PerpendicularityController
     }
 
     [HttpPost("login")]
-    [ProducesResponseType(typeof(RegisteredUser), StatusCodes.Status200OK)]
-    public async Task<ActionResult<RegisteredUser>> LoginAsync(LoginRequest request)
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<LoginResponse>> LoginAsync(LoginRequest request)
     {
         var query = request.ToQuery();
         var user = await mediator.RequestResponseAsync<GetUserByLoginCredentialsQuery, RegisteredUser>(query);
 
-        return Ok(user);
+        var token = jwtTokenService.GenerateToken(user);
+
+        var response = LoginResponse.FromRegisteredUser(user, token);
+
+        return Ok(response);
     }
 }

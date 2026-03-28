@@ -1,12 +1,13 @@
-import { Client, LoginRequest, RegisteredUser } from '../apiclients/PerpendicularityApiClient'
+import { LoginRequest, LoginResponse } from '../apiclients/PerpendicularityApiClient'
+import { createClient } from '../apiClient'
 
-export async function LoginUser(firstName: string, lastName: string, password: string): Promise<RegisteredUser> {
+export async function LoginUser(firstName: string, lastName: string, password: string): Promise<LoginResponse> {
     const request = new LoginRequest({
         firstName: firstName,
         lastName: lastName,
         passwordRaw: password
     })
 
-    const client = new Client('http://localhost:63000');
+    const client = createClient()
     return await client.login(request)
 }
