@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Vulpes.Electrum.Domain.Commanding;
 using Vulpes.Electrum.Domain.Mediation;
+using Vulpes.Electrum.Domain.Security;
 using Vulpes.Perpendicularity.Core.Commands;
 
 namespace Vulpes.Perpendicularity.Core.RegistrationExtensions;
@@ -8,10 +9,11 @@ namespace Vulpes.Perpendicularity.Core.RegistrationExtensions;
 public static class MediationRegistration
 {
     public static IServiceCollection InjectDomain(this IServiceCollection services) => services
-    .InjectCommands()
-    .InjectQueries()
-    .InjectMediator()
-    ;
+        .AddTransient<IKnoxHasher, KnoxHasher>()
+        .InjectCommands()
+        .InjectQueries()
+        .InjectMediator()
+        ;
 
     private static IServiceCollection InjectCommands(this IServiceCollection services) => services
         .AddTransient<CommandHandler<RegisterNewUserCommand>, RegisterNewUserCommandHandler>()

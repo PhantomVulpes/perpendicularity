@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using System.Reflection;
 
-namespace Vulpes.Perpendicularity.Infrastructure.Mongo;
+namespace Vulpes.Perpendicularity.Infrastructure.Mongo.Conventions;
 
 internal class ConfigureToStringConvention : ConventionBase, IMemberMapConvention
 {

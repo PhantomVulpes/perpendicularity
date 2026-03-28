@@ -6,6 +6,17 @@ using Vulpes.Perpendicularity.Infrastructure.RegistrationExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:62003") // Vite dev server port
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 // Add services to the container.
 builder.Services.AddControllers(options =>
 {
@@ -19,7 +30,8 @@ MongoConfigurator.Configure();
 // Dependencies.
 _ = builder.Services
     .InjectInfrastructure()
-    .InjectDomain();
+    .InjectDomain()
+    ;
 
 var app = builder.Build();
 
@@ -30,6 +42,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowFrontend");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

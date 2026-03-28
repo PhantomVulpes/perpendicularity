@@ -2,7 +2,7 @@ using Vulpes.Perpendicularity.Core.Commands;
 
 namespace Vulpes.Perpendicularity.Api.RequestModels;
 
-public record RegisterNewUserRequest(string FirstName, string LastName, string PasswordHash)
+public record RegisterNewUserRequest(string FirstName, string LastName, string PasswordRaw)
 {
-    public RegisterNewUserCommand ToCommand() => new(Guid.NewGuid(), FirstName, LastName, PasswordHash);
+    public RegisterNewUserCommand ToCommand() => new(Guid.NewGuid(), FirstName, LastName, PasswordRaw);
 }

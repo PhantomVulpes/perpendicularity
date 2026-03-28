@@ -1,70 +1,3 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import Card from 'primevue/card'
-import InputText from 'primevue/inputtext'
-import Password from 'primevue/password'
-import Button from 'primevue/button'
-import Message from 'primevue/message'
-import { Client, RegisterNewUserRequest } from '../api/apiclients/PerpendicularityApiClient'
-
-const router = useRouter()
-
-// Form fields
-const firstName = ref('')
-const lastName = ref('')
-const password = ref('')
-
-// UI state
-const loading = ref(false)
-const error = ref('')
-const success = ref(false)
-const userId = ref('')
-
-const apiClient = new Client('')
-
-const handleRegister = async () => {
-  error.value = ''
-  
-  // Basic validation
-  if (!firstName.value || !lastName.value || !password.value) {
-    error.value = 'All fields are required'
-    return
-  }
-
-  loading.value = true
-
-  try {
-    const request = new RegisterNewUserRequest({
-      firstName: firstName.value,
-      lastName: lastName.value,
-      passwordHash: password.value // TODO: Some kind of hashing service to deal with, I'm not sure how I am going to do that yet.
-    })
-
-    const newUserId = await apiClient.register(request)
-    
-    userId.value = newUserId
-    success.value = true
-    
-    // Reset form
-    firstName.value = ''
-    lastName.value = ''
-    password.value = ''
-    
-    // Redirect after a brief delay
-    setTimeout(() => {
-      router.push('/')
-    }, 2000)
-    
-  } catch (err: any) {
-    console.error('Registration error:', err)
-    error.value = err.message || 'Registration failed. Please try again.'
-  } finally {
-    loading.value = false
-  }
-}
-</script>
-
 <template>
   <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
     <Card class="w-full max-w-md">
@@ -77,9 +10,10 @@ const handleRegister = async () => {
       
       <template #content>
         <form @submit.prevent="handleRegister" class="flex flex-col gap-4">
-          <!-- Success Message -->User ID: {{ userId }}. 
+          <!-- Success Message -->
           <Message v-if="success" severity="success" :closable="false">
-            Registration successful! Redirecting...
+            <!-- TODO: Add a link to the sign in page. -->
+            Registration submitted. You may go here to sign in, but your access is restricted until you are approved by an admin
           </Message>
 
           <!-- Error Message -->
@@ -157,3 +91,59 @@ const handleRegister = async () => {
     </Card>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import Card from 'primevue/card'
+import InputText from 'primevue/inputtext'
+import Password from 'primevue/password'
+import Button from 'primevue/button'
+import Message from 'primevue/message'
+import { RegisterUser } from '@/api/User/RegisterUserCommand'
+
+const router = useRouter()
+
+// Form fields
+const firstName = ref('')
+const lastName = ref('')
+const password = ref('')
+
+// UI state
+const loading = ref(false)
+const error = ref('')
+const success = ref(false)
+const userId = ref('')
+
+const handleRegister = async () => {
+  error.value = ''
+  
+  // Basic validation
+  if (!firstName.value || !lastName.value || !password.value) {
+    error.value = 'All fields are required'
+    return
+  }
+
+  loading.value = true
+
+  try {
+    const newUserId = await RegisterUser(firstName.value, lastName.value, password.value);
+    
+    userId.value = newUserId
+    success.value = true
+    
+    // Reset form
+    firstName.value = ''
+    lastName.value = ''
+    password.value = ''
+    
+    // Show the message and button.
+    
+  } catch (err: any) {
+    console.error('Registration error:', err)
+    error.value = err.message || 'Registration failed. Please try again.'
+  } finally {
+    loading.value = false
+  }
+}
+</script>

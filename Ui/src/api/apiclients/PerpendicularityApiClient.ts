@@ -64,7 +64,7 @@ export class Client {
 export class RegisterNewUserRequest implements IRegisterNewUserRequest {
     firstName?: string | null;
     lastName?: string | null;
-    passwordHash?: string | null;
+    passwordRaw?: string | null;
 
     constructor(data?: IRegisterNewUserRequest) {
         if (data) {
@@ -79,7 +79,7 @@ export class RegisterNewUserRequest implements IRegisterNewUserRequest {
         if (_data) {
             this.firstName = _data["firstName"] !== undefined ? _data["firstName"] : null as any;
             this.lastName = _data["lastName"] !== undefined ? _data["lastName"] : null as any;
-            this.passwordHash = _data["passwordHash"] !== undefined ? _data["passwordHash"] : null as any;
+            this.passwordRaw = _data["passwordRaw"] !== undefined ? _data["passwordRaw"] : null as any;
         }
     }
 
@@ -94,7 +94,7 @@ export class RegisterNewUserRequest implements IRegisterNewUserRequest {
         data = typeof data === 'object' ? data : {};
         data["firstName"] = this.firstName !== undefined ? this.firstName : null as any;
         data["lastName"] = this.lastName !== undefined ? this.lastName : null as any;
-        data["passwordHash"] = this.passwordHash !== undefined ? this.passwordHash : null as any;
+        data["passwordRaw"] = this.passwordRaw !== undefined ? this.passwordRaw : null as any;
         return data;
     }
 }
@@ -102,7 +102,7 @@ export class RegisterNewUserRequest implements IRegisterNewUserRequest {
 export interface IRegisterNewUserRequest {
     firstName?: string | null;
     lastName?: string | null;
-    passwordHash?: string | null;
+    passwordRaw?: string | null;
 }
 
 export class ApiException extends Error {

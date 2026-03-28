@@ -1,3 +1,5 @@
+using Vulpes.Perpendicularity.Core.ValueObjects;
+
 namespace Vulpes.Perpendicularity.Core.Models;
 
 public record RegisteredUser : AggregateRoot
@@ -17,7 +19,7 @@ public record RegisteredUser : AggregateRoot
     /// </summary>
     public string DisplayName => $"{FirstName} {LastName[0]}";
 
-    public string PasswordHash { get; init; } = string.Empty;
+    public HashedString PasswordHash { get; init; } = HashedString.Empty;
 
     public UserStatus Status { get; init; } = UserStatus.Unknown;
 
