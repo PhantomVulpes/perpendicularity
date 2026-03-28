@@ -1,0 +1,31 @@
+namespace Vulpes.Perpendicularity.Core.Models;
+
+public record RegisteredUser : AggregateRoot
+{
+    public static RegisteredUser Empty { get; } = new();
+    public static RegisteredUser Default => Empty with
+    {
+        Key = Guid.NewGuid()
+    };
+
+    public string FirstName { get; init; } = string.Empty;
+    public string LastName { get; init; } = string.Empty;
+
+    /// <summary>
+    /// Concats the first name and last initial into a display name for the user.
+    /// </summary>
+    public string DisplayName => $"{FirstName} {LastName[0]}";
+
+    public string PasswordHash { get; init; } = string.Empty;
+
+    public UserStatus Status { get; init; } = UserStatus.Unknown;
+}
+
+public enum UserStatus
+{
+    Unknown,
+    Inactive,
+    Unapproved,
+    Approved,
+    Admin
+}
