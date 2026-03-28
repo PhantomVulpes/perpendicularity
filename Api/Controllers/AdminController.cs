@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Vulpes.Electrum.Domain.Mediation;
+using Vulpes.Perpendicularity.Api.RequestModels;
 using Vulpes.Perpendicularity.Core.Commands;
 
 namespace Vulpes.Perpendicularity.Api.Controllers;
@@ -17,6 +18,15 @@ public class AdminController : PerpendicularityController
     public async Task<ActionResult> InitializeApplicationSettingsAsync()
     {
         var command = new InitializeApplicationSettingsCommand(RegisteredUser.Key);
+        await mediator.ExecuteCommandAsync(command);
+
+        return Ok();
+    }
+
+    [HttpPost("approve-user")]
+    public async Task<ActionResult> ApproveUserAsync(ApproveUserRequest request)
+    {
+        var command = request.ToCommand(RegisteredUser);
         await mediator.ExecuteCommandAsync(command);
 
         return Ok();
