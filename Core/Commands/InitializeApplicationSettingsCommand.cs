@@ -17,14 +17,20 @@ public class InitializeApplicationSettingsCommandHandler : CommandHandler<Initia
         this.settingsRepository = settingsRepository;
     }
 
-    protected override Task InternalExecuteAsync(InitializeApplicationSettingsCommand command)
+    protected override async Task InternalExecuteAsync(InitializeApplicationSettingsCommand command)
     {
+        var initialApplicationSettings = await settingsRepository.GetAsync(ApplicationSettings.GlobalApplicationSettingsKey);
+        if (initialApplicationSettings != null)
+        {
+            throw new InvalidOperationException($"{nameof(ApplicationSettings)} have already been initialized. This operation can only be performed once.");
+        }
+
         var settings = ApplicationSettings.Default with
         {
             Key = ApplicationSettings.GlobalApplicationSettingsKey
         };
 
-        return settingsRepository.InsertAsync(settings);
+        await settingsRepository.InsertAsync(settings);
     }
 
     protected override async Task<AccessResult> InternalValidateAccessAsync(InitializeApplicationSettingsCommand command)

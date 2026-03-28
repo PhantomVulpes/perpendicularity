@@ -17,6 +17,18 @@
             </div>
           </div>
           
+          <!-- Admin Button (only shown for administrators) -->
+          <Button
+            v-if="isAdmin"
+            label="Admin"
+            icon="pi pi-shield"
+            @click="router.push('/admin')"
+            severity="info"
+            outlined
+            size="small"
+            aria-label="Admin Dashboard"
+          />
+          
           <Button
             icon="pi pi-sign-out"
             @click="handleSignOut"
@@ -58,6 +70,10 @@ import { UserStatus } from '@/api/apiclients/PerpendicularityApiClient'
 
 const { user, isAuthenticated, signOut } = useAuth()
 const router = useRouter()
+
+const isAdmin = computed(() => {
+  return isAuthenticated.value && user.value?.status === UserStatus._4
+})
 
 const fullName = computed(() => {
   if (!user.value) return ''
