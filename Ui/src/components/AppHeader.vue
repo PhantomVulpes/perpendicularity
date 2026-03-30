@@ -2,10 +2,19 @@
   <div class="bg-white border-b border-gray-200 shadow-sm">
     <div class="container mx-auto px-4 py-3">
       <div class="flex items-center justify-between">
-        <!-- Left: App Title -->
-        <RouterLink to="/" class="text-lg font-semibold text-gray-800 hover:text-blue-600 transition-colors cursor-pointer">
-          Shadesmar's Perpendicularity
-        </RouterLink>
+        <!-- Left: App Title & Navigation -->
+        <div class="flex items-center gap-6">
+          <RouterLink to="/" class="text-lg font-semibold text-gray-800 hover:text-blue-600 transition-colors cursor-pointer">
+            Shadesmar's Perpendicularity
+          </RouterLink>
+          <RouterLink 
+            to="/roadmap" 
+            class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-1"
+          >
+            <i class="pi pi-map text-xs"></i>
+            Roadmap
+          </RouterLink>
+        </div>
         
         <!-- Right: Auth Actions or User Info -->
         <div v-if="isAuthenticated" class="flex items-center gap-3">

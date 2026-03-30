@@ -32,6 +32,11 @@ const routes: RouteRecordRaw[] = [
     path: '/admin/approve-users',
     name: 'ApproveUsers',
     component: () => import('../views/ApproveUsersPage.vue')
+  },
+  {
+    path: '/roadmap',
+    name: 'Roadmap',
+    component: () => import('../views/RoadmapPage.vue')
   }
 ]
 
