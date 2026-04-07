@@ -25,6 +25,8 @@ public record RegisteredUser : AggregateRoot
 
     public DateTimeOffset CreationDate { get; init; } = DateTimeOffset.MinValue;
     public DateTimeOffset LastLoginDate { get; init; } = DateTimeOffset.MinValue;
+
+    public override string ToLogName() => $"{LastName} {FirstName} ({Key})";
 }
 
 public enum UserStatus

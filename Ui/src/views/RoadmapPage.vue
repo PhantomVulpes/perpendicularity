@@ -150,7 +150,7 @@ const upcomingFeatures = ref<RoadmapFeature[]>([
   {
     id: 7,
     title: 'Personal File Storage',
-    description: 'Allow approved users to create their own private folders and store their own files',
+    description: 'Allow approved users to create their own private folders and store their own files. Save data, music, backups.',
     completed: false
   },
   {
