@@ -92,6 +92,44 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
+    editSettings(body: EditApplicationSettingsRequest | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/admin/edit-settings";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processEditSettings(_response);
+        });
+    }
+
+    protected processEditSettings(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
     register(body: RegisterNewUserRequest | undefined): Promise<string> {
         let url_ = this.baseUrl + "/api/user/register";
         url_ = url_.replace(/[?&]$/, "");
@@ -252,6 +290,93 @@ export class ApproveUserRequest implements IApproveUserRequest {
 
 export interface IApproveUserRequest {
     requestedUserKey?: string;
+}
+
+export class DirectoryConfiguration implements IDirectoryConfiguration {
+    path?: string | null;
+    alias?: string | null;
+
+    constructor(data?: IDirectoryConfiguration) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.path = _data["path"] !== undefined ? _data["path"] : null as any;
+            this.alias = _data["alias"] !== undefined ? _data["alias"] : null as any;
+        }
+    }
+
+    static fromJS(data: any): DirectoryConfiguration {
+        data = typeof data === 'object' ? data : {};
+        let result = new DirectoryConfiguration();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["path"] = this.path !== undefined ? this.path : null as any;
+        data["alias"] = this.alias !== undefined ? this.alias : null as any;
+        return data;
+    }
+}
+
+export interface IDirectoryConfiguration {
+    path?: string | null;
+    alias?: string | null;
+}
+
+export class EditApplicationSettingsRequest implements IEditApplicationSettingsRequest {
+    directoryConfigurations?: DirectoryConfiguration[] | null;
+
+    constructor(data?: IEditApplicationSettingsRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["directoryConfigurations"])) {
+                this.directoryConfigurations = [] as any;
+                for (let item of _data["directoryConfigurations"])
+                    this.directoryConfigurations!.push(DirectoryConfiguration.fromJS(item));
+            }
+            else {
+                this.directoryConfigurations = null as any;
+            }
+        }
+    }
+
+    static fromJS(data: any): EditApplicationSettingsRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new EditApplicationSettingsRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.directoryConfigurations)) {
+            data["directoryConfigurations"] = [];
+            for (let item of this.directoryConfigurations)
+                data["directoryConfigurations"].push(item ? item.toJSON() : null as any);
+        }
+        return data;
+    }
+}
+
+export interface IEditApplicationSettingsRequest {
+    directoryConfigurations?: DirectoryConfiguration[] | null;
 }
 
 export class HashedString implements IHashedString {

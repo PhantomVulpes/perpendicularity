@@ -31,4 +31,13 @@ public class AdminController : PerpendicularityController
 
         return Ok();
     }
+
+    [HttpPost("edit-settings")]
+    public async Task<ActionResult> EditApplicationSettings(EditApplicationSettingsRequest request)
+    {
+        var command = request.ToCommand(RegisteredUser);
+        await mediator.ExecuteCommandAsync(command);
+
+        return Ok();
+    }
 }

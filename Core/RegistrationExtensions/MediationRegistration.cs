@@ -19,9 +19,11 @@ public static class MediationRegistration
         ;
 
     private static IServiceCollection InjectCommands(this IServiceCollection services) => services
+        .AddTransient<CommandHandler<LogInCommand>, LogInCommandHandler>()
         .AddTransient<CommandHandler<RegisterNewUserCommand>, RegisterNewUserCommandHandler>()
         .AddTransient<CommandHandler<InitializeApplicationSettingsCommand>, InitializeApplicationSettingsCommandHandler>()
         .AddTransient<CommandHandler<ApproveUserCommand>, ApproveUserCommandHandler>()
+        .AddTransient<CommandHandler<EditApplicationSettingsCommand>, EditApplicationSettingsCommandHandler>()
         ;
 
     private static IServiceCollection InjectQueries(this IServiceCollection services) => services
@@ -36,9 +38,11 @@ public static class MediationRegistration
             var mediator = new Mediator();
 
             _ = mediator
+                .Register(provider.GetRequiredService<CommandHandler<LogInCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<RegisterNewUserCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<InitializeApplicationSettingsCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<ApproveUserCommand>>())
+                .Register(provider.GetRequiredService<CommandHandler<EditApplicationSettingsCommand>>())
                 ;
 
             _ = mediator
