@@ -8,6 +8,13 @@
             Shadesmar's Perpendicularity
           </RouterLink>
           <RouterLink 
+            to="/browse" 
+            class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-1"
+          >
+            <i class="pi pi-folder-open text-xs"></i>
+            Browse
+          </RouterLink>
+          <RouterLink 
             to="/roadmap" 
             class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-1"
           >

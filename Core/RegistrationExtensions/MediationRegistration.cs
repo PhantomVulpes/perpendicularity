@@ -5,6 +5,7 @@ using Vulpes.Electrum.Domain.Querying;
 using Vulpes.Electrum.Domain.Security;
 using Vulpes.Perpendicularity.Core.Commands;
 using Vulpes.Perpendicularity.Core.Models;
+using Vulpes.Perpendicularity.Core.QueriedModels;
 using Vulpes.Perpendicularity.Core.Queries;
 
 namespace Vulpes.Perpendicularity.Core.RegistrationExtensions;
@@ -30,7 +31,7 @@ public static class MediationRegistration
         .AddTransient<QueryHandler<GetUserByLoginCredentialsQuery, RegisteredUser>, GetUserByLoginCredentialsQueryHandler>()
         .AddTransient<QueryHandler<GetAllUsersQuery, IQueryable<RegisteredUser>>, GetAllUsersQueryHandler>()
         .AddTransient<QueryHandler<GetApplicationSettingsQuery, ApplicationSettings>, GetApplicationSettingsQueryHandler>()
-        .AddTransient<QueryHandler<GetDirectoryContentsQuery, IEnumerable<string>>, GetDirectoryContentsQueryHandler>()
+        .AddTransient<QueryHandler<GetDirectoryContentsQuery, DirectoryContents>, GetDirectoryContentsQueryHandler>()
         .AddTransient<QueryHandler<GetDirectoryConfigurationsQuery, IEnumerable<DirectoryConfiguration>>, GetDirectoryConfigurationsQueryHandler>()
         ;
 
@@ -52,7 +53,7 @@ public static class MediationRegistration
                 .Register(provider.GetRequiredService<QueryHandler<GetUserByLoginCredentialsQuery, RegisteredUser>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetAllUsersQuery, IQueryable<RegisteredUser>>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetApplicationSettingsQuery, ApplicationSettings>>())
-                .Register(provider.GetRequiredService<QueryHandler<GetDirectoryContentsQuery, IEnumerable<string>>>())
+                .Register(provider.GetRequiredService<QueryHandler<GetDirectoryContentsQuery, DirectoryContents>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetDirectoryConfigurationsQuery, IEnumerable<DirectoryConfiguration>>>())
                 ;
 

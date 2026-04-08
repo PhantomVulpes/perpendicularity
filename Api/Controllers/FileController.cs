@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Vulpes.Electrum.Domain.Mediation;
+using Vulpes.Perpendicularity.Api.ResponseModels;
 using Vulpes.Perpendicularity.Core.Models;
+using Vulpes.Perpendicularity.Core.QueriedModels;
 using Vulpes.Perpendicularity.Core.Queries;
 
 namespace Vulpes.Perpendicularity.Api.Controllers;
@@ -16,7 +18,7 @@ public class FileController : PerpendicularityController
 
     [HttpGet("{rootDirectory}")]
     [HttpGet("{rootDirectory}/{**remainingPath}")]
-    public async Task<ActionResult<IEnumerable<string>>> GetStuff(string rootDirectory, string? remainingPath = "")
+    public async Task<ActionResult<DirectoryContentsResponse>> GetDirectoryContents(string rootDirectory, string? remainingPath = "")
     {
         var decodedPath = string.IsNullOrEmpty(remainingPath) ? string.Empty : Uri.UnescapeDataString(remainingPath);
 
@@ -25,9 +27,9 @@ public class FileController : PerpendicularityController
             ;
 
         var query = new GetDirectoryContentsQuery(RegisteredUser.Key, desiredRoot, decodedPath);
-        var result = await mediator.RequestResponseAsync<GetDirectoryContentsQuery, IEnumerable<string>>(query);
+        var contents = await mediator.RequestResponseAsync<GetDirectoryContentsQuery, DirectoryContents>(query);
 
-        return Ok(result);
+        return Ok(DirectoryContentsResponse.FromDirectoryContents(contents));
     }
 
     [HttpGet("root-directory")]

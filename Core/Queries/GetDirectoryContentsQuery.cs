@@ -3,11 +3,12 @@ using Vulpes.Electrum.Domain.Querying;
 using Vulpes.Electrum.Domain.Security;
 using Vulpes.Perpendicularity.Core.Data;
 using Vulpes.Perpendicularity.Core.Models;
+using Vulpes.Perpendicularity.Core.QueriedModels;
 
 namespace Vulpes.Perpendicularity.Core.Queries;
 
 public record GetDirectoryContentsQuery(Guid AuthenticatedUserKey, DirectoryConfiguration RootDirectory, string RemainingPath) : Query;
-public class GetDirectoryContentsQueryHandler : QueryHandler<GetDirectoryContentsQuery, IEnumerable<string>>
+public class GetDirectoryContentsQueryHandler : QueryHandler<GetDirectoryContentsQuery, DirectoryContents>
 {
     private readonly IModelRepository<RegisteredUser> userRepository;
     private readonly IModelRepository<ApplicationSettings> settingsRepository;
@@ -19,7 +20,7 @@ public class GetDirectoryContentsQueryHandler : QueryHandler<GetDirectoryContent
     }
 
 
-    protected override async Task<IEnumerable<string>> InternalRequestAsync(GetDirectoryContentsQuery query)
+    protected override async Task<DirectoryContents> InternalRequestAsync(GetDirectoryContentsQuery query)
     {
         var user = await userRepository.GetAsync(query.AuthenticatedUserKey);
         if (user.Status != UserStatus.Admin && user.Status != UserStatus.Approved)
@@ -43,9 +44,15 @@ public class GetDirectoryContentsQueryHandler : QueryHandler<GetDirectoryContent
         }
 
         // Get all files and directories
-        var entries = Directory.GetFileSystemEntries(currentDirectory);
+        var files = Directory.GetFiles(currentDirectory);
+        var directories = Directory.GetDirectories(currentDirectory);
 
-        // Return just the names (not full paths)
-        return entries.Select(Path.GetFileName).Where(name => !string.IsNullOrEmpty(name))!;
+        var result = DirectoryContents.Default(currentDirectory) with
+        {
+            Files = files.Select(Path.GetFileName).Where(name => !string.IsNullOrEmpty(name))!,
+            Directories = directories.Select(Path.GetFileName).Where(name => !string.IsNullOrEmpty(name))!
+        };
+
+        return result;
     }
 }

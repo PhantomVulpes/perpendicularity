@@ -37,6 +37,16 @@ const routes: RouteRecordRaw[] = [
     path: '/roadmap',
     name: 'Roadmap',
     component: () => import('../views/RoadmapPage.vue')
+  },
+  {
+    path: '/browse',
+    name: 'Browse',
+    component: () => import('../views/BrowsePage.vue')
+  },
+  {
+    path: '/browse/:rootDirectory/:pathMatch(.*)*',
+    name: 'BrowsePath',
+    component: () => import('../views/BrowsePathPage.vue')
   }
 ]
 

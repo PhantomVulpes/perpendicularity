@@ -166,7 +166,7 @@ export class Client {
     /**
      * @return OK
      */
-    file(rootDirectory: string): Promise<string[]> {
+    file(rootDirectory: string): Promise<DirectoryContentsResponse> {
         let url_ = this.baseUrl + "/api/file/{rootDirectory}";
         if (rootDirectory === undefined || rootDirectory === null)
             throw new globalThis.Error("The parameter 'rootDirectory' must be defined.");
@@ -185,21 +185,14 @@ export class Client {
         });
     }
 
-    protected processFile(response: Response): Promise<string[]> {
+    protected processFile(response: Response): Promise<DirectoryContentsResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(item);
-            }
-            else {
-                result200 = null as any;
-            }
+            result200 = DirectoryContentsResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -207,13 +200,13 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<string[]>(null as any);
+        return Promise.resolve<DirectoryContentsResponse>(null as any);
     }
 
     /**
      * @return OK
      */
-    file2(rootDirectory: string, remainingPath: string): Promise<string[]> {
+    file2(rootDirectory: string, remainingPath: string): Promise<DirectoryContentsResponse> {
         let url_ = this.baseUrl + "/api/file/{rootDirectory}/{remainingPath}";
         if (rootDirectory === undefined || rootDirectory === null)
             throw new globalThis.Error("The parameter 'rootDirectory' must be defined.");
@@ -235,21 +228,14 @@ export class Client {
         });
     }
 
-    protected processFile2(response: Response): Promise<string[]> {
+    protected processFile2(response: Response): Promise<DirectoryContentsResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(item);
-            }
-            else {
-                result200 = null as any;
-            }
+            result200 = DirectoryContentsResponse.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -257,7 +243,7 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<string[]>(null as any);
+        return Promise.resolve<DirectoryContentsResponse>(null as any);
     }
 
     /**
@@ -563,6 +549,68 @@ export class DirectoryConfiguration implements IDirectoryConfiguration {
 export interface IDirectoryConfiguration {
     path?: string | null;
     alias?: string | null;
+}
+
+export class DirectoryContentsResponse implements IDirectoryContentsResponse {
+    directories?: string[] | null;
+    files?: string[] | null;
+
+    constructor(data?: IDirectoryContentsResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["directories"])) {
+                this.directories = [] as any;
+                for (let item of _data["directories"])
+                    this.directories!.push(item);
+            }
+            else {
+                this.directories = null as any;
+            }
+            if (Array.isArray(_data["files"])) {
+                this.files = [] as any;
+                for (let item of _data["files"])
+                    this.files!.push(item);
+            }
+            else {
+                this.files = null as any;
+            }
+        }
+    }
+
+    static fromJS(data: any): DirectoryContentsResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new DirectoryContentsResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.directories)) {
+            data["directories"] = [];
+            for (let item of this.directories)
+                data["directories"].push(item);
+        }
+        if (Array.isArray(this.files)) {
+            data["files"] = [];
+            for (let item of this.files)
+                data["files"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IDirectoryContentsResponse {
+    directories?: string[] | null;
+    files?: string[] | null;
 }
 
 export class EditApplicationSettingsRequest implements IEditApplicationSettingsRequest {
