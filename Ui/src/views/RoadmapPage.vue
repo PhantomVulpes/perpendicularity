@@ -124,17 +124,17 @@ const completedFeatures = ref<RoadmapFeature[]>([
     title: 'User Approval System',
     description: 'Workflow for approving new user registrations',
     completed: true
-  }
-])
-
-// Upcoming features
-const upcomingFeatures = ref<RoadmapFeature[]>([
+  },
   {
     id: 4,
     title: 'File Browsing',
     description: 'Allow approved users to browse folders and files in the server',
-    completed: false
+    completed: true
   },
+])
+
+// Upcoming features
+const upcomingFeatures = ref<RoadmapFeature[]>([
   {
     id: 5,
     title: 'File Download',
