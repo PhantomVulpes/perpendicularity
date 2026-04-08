@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Vulpes.Electrum.Domain.Mediation;
 using Vulpes.Perpendicularity.Api.RequestModels;
 using Vulpes.Perpendicularity.Api.Services;
+using Vulpes.Perpendicularity.Core.Commands;
 using Vulpes.Perpendicularity.Core.Models;
 using Vulpes.Perpendicularity.Core.Queries;
 
@@ -42,7 +43,7 @@ public class UserController : PerpendicularityController
 
         var response = LoginResponse.FromRegisteredUser(user, token);
 
-        // TODO: Update last login time.
+        await mediator.ExecuteCommandAsync(new LogInCommand(user));
 
         return Ok(response);
     }

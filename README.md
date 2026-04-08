@@ -47,10 +47,73 @@ Before running the application, ensure you have the following installed:
 
 ## Configuration
 
+### Development Setup
+
+The API is configured via `Api/appsettings.json` for non-sensitive settings. **Sensitive values like JWT keys use .NET User Secrets**:
+
+1. User secrets are already initialized for the project
+2. A secure JWT key has been generated automatically
+3. To view/modify secrets: `dotnet user-secrets list --project Api`
+4. To set a new key: `dotnet user-secrets set "Jwt:Key" "your-secure-key-here" --project Api`
+
+### Production Setup (Home Server on Linux)
+
+**Never commit secrets to source control.** For a Linux server:
+
+1. **Generate a production JWT key:**
+   ```bash
+   openssl rand -base64 32
+   ```
+   Copy the output - this is your production key.
+
+2. **Edit the service file:**
+   - Open `perpendicularity.service`
+   - Replace `YOUR_USERNAME` with your Linux username (run `whoami` to find it)
+   - Replace `CHANGE_THIS_TO_YOUR_SECRET_KEY` with your generated key
+   - Save the file (**don't commit it!**)
+
+3. **Install and start the service:**
+   ```bash
+   # Copy service file to systemd
+   sudo cp perpendicularity.service /etc/systemd/system/
+   
+   # Reload systemd to recognize the new service
+   sudo systemctl daemon-reload
+   
+   # Enable auto-start on boot
+   sudo systemctl enable perpendicularity
+   
+   # Start the service now
+   sudo systemctl start perpendicularity
+   
+   # Check if it's running
+   sudo systemctl status perpendicularity
+   ```
+
+4. **View logs:**
+   ```bash
+   sudo journalctl -u perpendicularity -f
+   ```
+
+5. **Stop/restart when needed:**
+   ```bash
+   sudo systemctl stop perpendicularity
+   sudo systemctl restart perpendicularity
+   ```
+
+**For cloud hosting:** Use your platform's secrets management (Azure Key Vault, AWS Secrets Manager, etc.)
+
+### JWT Configuration
+
+- **Issuer**: `Perpendicularity.Api` (identifies your API)
+- **Audience**: `Perpendicularity.Ui` (identifies your frontend)
+- **Key**: Automatically generated 32+ character secret (stored in user secrets for dev)
+- **ExpiryInHours**: Token lifetime (default: 1 hour)
+
+## Configuration
+
 - **API**: Configured in `Api/appsettings.json` (JWT settings, port 63000)
 - **Database**: MongoDB on localhost:63002 (auto-created on first run)
-
-> **Note**: Change the JWT key for production environments.
 
 ## Production Build
 
