@@ -30,6 +30,7 @@ public static class MediationRegistration
         .AddTransient<QueryHandler<GetUserByLoginCredentialsQuery, RegisteredUser>, GetUserByLoginCredentialsQueryHandler>()
         .AddTransient<QueryHandler<GetAllUsersQuery, IQueryable<RegisteredUser>>, GetAllUsersQueryHandler>()
         .AddTransient<QueryHandler<GetApplicationSettingsQuery, ApplicationSettings>, GetApplicationSettingsQueryHandler>()
+        .AddTransient<QueryHandler<GetDirectoryContentsQuery, IEnumerable<string>>, GetDirectoryContentsQueryHandler>()
         ;
 
     private static IServiceCollection InjectMediator(this IServiceCollection services)
@@ -50,6 +51,7 @@ public static class MediationRegistration
                 .Register(provider.GetRequiredService<QueryHandler<GetUserByLoginCredentialsQuery, RegisteredUser>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetAllUsersQuery, IQueryable<RegisteredUser>>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetApplicationSettingsQuery, ApplicationSettings>>())
+                .Register(provider.GetRequiredService<QueryHandler<GetDirectoryContentsQuery, IEnumerable<string>>>())
                 ;
 
             return mediator;
