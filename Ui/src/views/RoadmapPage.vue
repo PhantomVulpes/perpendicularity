@@ -149,36 +149,42 @@ const upcomingFeatures = ref<RoadmapFeature[]>([
   },
   {
     id: 7,
+    title: 'Zinc Backend',
+    description: 'Scheduled break to work on the ticketing system for projects. It needs some love, as it will be used as the ticketing system for this project as well.',
+    completed: false
+  },
+  {
+    id: 8,
     title: 'Personal File Storage',
     description: 'Allow approved users to create their own private folders and store their own files. Save data, music, backups.',
     completed: false
   },
   {
-    id: 8,
+    id: 9,
     title: 'New Content Dashboard',
     description: 'Get notified on the home page when new content is added',
     completed: false
   },
   {
-    id: 9,
+    id: 10,
     title: 'Storage Analytics',
     description: 'Dashboard showing storage usage, popular content, and statistics',
     completed: false
   },
   {
-    id: 10,
+    id: 11,
     title: 'Content Request System',
     description: 'Users can request new content to be added to the server',
     completed: false
   },
   {
-    id: 11,
+    id: 12,
     title: 'User Tagging System',
     description: 'Browse through user-tagged files with custom tags and categories',
     completed: false
   },
   {
-    id: 12,
+    id: 13,
     title: 'Advanced Search',
     description: 'Enhanced search functionality with filters and categories',
     completed: false
