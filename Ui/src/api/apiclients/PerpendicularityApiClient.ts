@@ -89,11 +89,48 @@ export class Client {
     }
 
     /**
+     * @return OK
+     */
+    settings(): Promise<ApplicationSettings> {
+        let url_ = this.baseUrl + "/api/admin/settings";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSettings(_response);
+        });
+    }
+
+    protected processSettings(response: Response): Promise<ApplicationSettings> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApplicationSettings.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ApplicationSettings>(null as any);
+    }
+
+    /**
      * @param body (optional) 
      * @return OK
      */
-    editSettings(body: EditApplicationSettingsRequest | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/admin/edit-settings";
+    edit(body: EditApplicationSettingsRequest | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/admin/settings/edit";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -107,11 +144,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEditSettings(_response);
+            return this.processEdit(_response);
         });
     }
 
-    protected processEditSettings(response: Response): Promise<void> {
+    protected processEdit(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -254,6 +291,61 @@ export class Client {
         }
         return Promise.resolve<RegisteredUser[]>(null as any);
     }
+}
+
+export class ApplicationSettings implements IApplicationSettings {
+    key?: string;
+    editingToken?: string | null;
+    downloadPaths?: DirectoryConfiguration[] | null;
+
+    constructor(data?: IApplicationSettings) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.key = _data["key"] !== undefined ? _data["key"] : null as any;
+            this.editingToken = _data["editingToken"] !== undefined ? _data["editingToken"] : null as any;
+            if (Array.isArray(_data["downloadPaths"])) {
+                this.downloadPaths = [] as any;
+                for (let item of _data["downloadPaths"])
+                    this.downloadPaths!.push(DirectoryConfiguration.fromJS(item));
+            }
+            else {
+                this.downloadPaths = null as any;
+            }
+        }
+    }
+
+    static fromJS(data: any): ApplicationSettings {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApplicationSettings();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["key"] = this.key !== undefined ? this.key : null as any;
+        data["editingToken"] = this.editingToken !== undefined ? this.editingToken : null as any;
+        if (Array.isArray(this.downloadPaths)) {
+            data["downloadPaths"] = [];
+            for (let item of this.downloadPaths)
+                data["downloadPaths"].push(item ? item.toJSON() : null as any);
+        }
+        return data;
+    }
+}
+
+export interface IApplicationSettings {
+    key?: string;
+    editingToken?: string | null;
+    downloadPaths?: DirectoryConfiguration[] | null;
 }
 
 export class ApproveUserRequest implements IApproveUserRequest {

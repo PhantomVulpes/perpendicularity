@@ -5,19 +5,19 @@ using Vulpes.Perpendicularity.Core.Models;
 
 namespace Vulpes.Perpendicularity.Core.Queries;
 
-public record GetAllUsersQuery(Guid AuthenticatedUserKey) : Query;
-public class GetAllUsersQueryHandler : QueryHandler<GetAllUsersQuery, IQueryable<RegisteredUser>>
+public record GetApplicationSettingsQuery(Guid AuthenticatedUserKey) : Query;
+public class GetApplicationSettingsQueryHandler : QueryHandler<GetApplicationSettingsQuery, ApplicationSettings>
 {
-    private readonly IQueryProvider<RegisteredUser> userQueryProvider;
     private readonly IModelRepository<RegisteredUser> userRepository;
+    private readonly IModelRepository<ApplicationSettings> settingsRepository;
 
-    public GetAllUsersQueryHandler(IQueryProvider<RegisteredUser> userQueryProvider, IModelRepository<RegisteredUser> userRepository)
+    public GetApplicationSettingsQueryHandler(IModelRepository<RegisteredUser> userRepository, IModelRepository<ApplicationSettings> settingsRepository)
     {
-        this.userQueryProvider = userQueryProvider;
         this.userRepository = userRepository;
+        this.settingsRepository = settingsRepository;
     }
 
-    protected override async Task<IQueryable<RegisteredUser>> InternalRequestAsync(GetAllUsersQuery query)
+    protected override async Task<ApplicationSettings> InternalRequestAsync(GetApplicationSettingsQuery query)
     {
         var authenticatedUser = await userRepository.GetAsync(query.AuthenticatedUserKey);
         if (authenticatedUser.Status != UserStatus.Admin)
@@ -26,6 +26,6 @@ public class GetAllUsersQueryHandler : QueryHandler<GetAllUsersQuery, IQueryable
             AccessResult.Fail($"{nameof(RegisteredUser)} {authenticatedUser.ToLogName()} does not have ${nameof(UserStatus.Admin)} access.").ThrowIfAccessDenied();
         }
 
-        return await userQueryProvider.BeginQueryAsync();
+        return await settingsRepository.GetAsync(ApplicationSettings.GlobalApplicationSettingsKey);
     }
 }

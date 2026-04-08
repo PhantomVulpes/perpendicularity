@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Vulpes.Electrum.Domain.Mediation;
 using Vulpes.Perpendicularity.Api.RequestModels;
 using Vulpes.Perpendicularity.Core.Commands;
+using Vulpes.Perpendicularity.Core.Models;
+using Vulpes.Perpendicularity.Core.Queries;
 
 namespace Vulpes.Perpendicularity.Api.Controllers;
 
@@ -32,7 +34,16 @@ public class AdminController : PerpendicularityController
         return Ok();
     }
 
-    [HttpPost("edit-settings")]
+    [HttpGet("settings")]
+    public async Task<ActionResult<ApplicationSettings>> GetApplicationSettings()
+    {
+        var query = new GetApplicationSettingsQuery(RegisteredUser.Key);
+        var settings = await mediator.RequestResponseAsync<GetApplicationSettingsQuery, ApplicationSettings>(query);
+
+        return Ok(settings);
+    }
+
+    [HttpPost("settings/edit")]
     public async Task<ActionResult> EditApplicationSettings(EditApplicationSettingsRequest request)
     {
         var command = request.ToCommand(RegisteredUser);
