@@ -33,6 +33,8 @@ public static class MediationRegistration
         .AddTransient<QueryHandler<GetApplicationSettingsQuery, ApplicationSettings>, GetApplicationSettingsQueryHandler>()
         .AddTransient<QueryHandler<GetDirectoryContentsQuery, DirectoryContents>, GetDirectoryContentsQueryHandler>()
         .AddTransient<QueryHandler<GetDirectoryConfigurationsQuery, IEnumerable<DirectoryConfiguration>>, GetDirectoryConfigurationsQueryHandler>()
+        .AddTransient<QueryHandler<GetFileForDownloadQuery, FileForDownload>, GetFileForDownloadQueryHandler>()
+        .AddTransient<QueryHandler<GetFilesAsZipQuery, ZipFileForDownload>, GetFilesAsZipQueryHandler>()
         ;
 
     private static IServiceCollection InjectMediator(this IServiceCollection services)
@@ -55,6 +57,8 @@ public static class MediationRegistration
                 .Register(provider.GetRequiredService<QueryHandler<GetApplicationSettingsQuery, ApplicationSettings>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetDirectoryContentsQuery, DirectoryContents>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetDirectoryConfigurationsQuery, IEnumerable<DirectoryConfiguration>>>())
+                .Register(provider.GetRequiredService<QueryHandler<GetFileForDownloadQuery, FileForDownload>>())
+                .Register(provider.GetRequiredService<QueryHandler<GetFilesAsZipQuery, ZipFileForDownload>>())
                 ;
 
             return mediator;

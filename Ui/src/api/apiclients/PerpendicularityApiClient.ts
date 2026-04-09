@@ -291,6 +291,83 @@ export class Client {
     }
 
     /**
+     * @return OK
+     */
+    download(rootDirectory: string, filePath: string): Promise<void> {
+        let url_ = this.baseUrl + "/api/file/download/{rootDirectory}/{filePath}";
+        if (rootDirectory === undefined || rootDirectory === null)
+            throw new globalThis.Error("The parameter 'rootDirectory' must be defined.");
+        url_ = url_.replace("{rootDirectory}", encodeURIComponent("" + rootDirectory));
+        if (filePath === undefined || filePath === null)
+            throw new globalThis.Error("The parameter 'filePath' must be defined.");
+        url_ = url_.replace("{filePath}", encodeURIComponent("" + filePath));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDownload(_response);
+        });
+    }
+
+    protected processDownload(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    downloadZip(body: DownloadFilesAsZipRequest | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/file/download-zip";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDownloadZip(_response);
+        });
+    }
+
+    protected processDownloadZip(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @param body (optional) 
      * @return OK
      */
@@ -611,6 +688,57 @@ export class DirectoryContentsResponse implements IDirectoryContentsResponse {
 export interface IDirectoryContentsResponse {
     directories?: string[] | null;
     files?: string[] | null;
+}
+
+export class DownloadFilesAsZipRequest implements IDownloadFilesAsZipRequest {
+    rootDirectory?: string | null;
+    filePaths?: string[] | null;
+
+    constructor(data?: IDownloadFilesAsZipRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.rootDirectory = _data["rootDirectory"] !== undefined ? _data["rootDirectory"] : null as any;
+            if (Array.isArray(_data["filePaths"])) {
+                this.filePaths = [] as any;
+                for (let item of _data["filePaths"])
+                    this.filePaths!.push(item);
+            }
+            else {
+                this.filePaths = null as any;
+            }
+        }
+    }
+
+    static fromJS(data: any): DownloadFilesAsZipRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new DownloadFilesAsZipRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["rootDirectory"] = this.rootDirectory !== undefined ? this.rootDirectory : null as any;
+        if (Array.isArray(this.filePaths)) {
+            data["filePaths"] = [];
+            for (let item of this.filePaths)
+                data["filePaths"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IDownloadFilesAsZipRequest {
+    rootDirectory?: string | null;
+    filePaths?: string[] | null;
 }
 
 export class EditApplicationSettingsRequest implements IEditApplicationSettingsRequest {

@@ -4,3 +4,24 @@ GET {{Perpendicularity_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+# Download a single file
+GET {{Perpendicularity_HostAddress}}/file/download/documents/subfolder/report.pdf
+Accept: application/octet-stream
+
+###
+
+# Download multiple files as ZIP
+POST {{Perpendicularity_HostAddress}}/file/download-zip
+Content-Type: application/json
+
+{
+  "rootDirectory": "documents",
+  "filePaths": [
+    "subfolder/report.pdf",
+    "subfolder/image.png",
+    "data.csv"
+  ]
+}
+
+###
