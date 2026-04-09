@@ -9,6 +9,7 @@ using Vulpes.Perpendicularity.Api.Services;
 using Vulpes.Perpendicularity.Core.RegistrationExtensions;
 using Vulpes.Perpendicularity.Infrastructure.Mongo;
 using Vulpes.Perpendicularity.Infrastructure.RegistrationExtensions;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -124,11 +125,24 @@ _ = builder.Services
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Configure the HTTP request pipeline.
+var version = Vulpes.Perpendicularity.Core.Configuration.ApplicationConfiguration.Version;
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"Perpendicularity API {version}"));
+
+// Serve static files from UI dist folder
+var uiDistPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "Ui", "dist");
+if (Directory.Exists(uiDistPath))
 {
-    var version = Vulpes.Perpendicularity.Core.Configuration.ApplicationConfiguration.Version;
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"Perpendicularity API {version}"));
+    app.UseDefaultFiles(new DefaultFilesOptions
+    {
+        FileProvider = new PhysicalFileProvider(uiDistPath)
+    });
+
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(uiDistPath)
+    });
 }
 
 app.UseCors("AllowFrontend");
@@ -142,5 +156,15 @@ app.UseAuthorization();
 app.UseMiddleware<UserContextMiddleware>();
 
 app.MapControllers();
+
+// Fallback to index.html for client-side routing (Vue Router)
+if (Directory.Exists(uiDistPath))
+{
+    app.MapFallback(async context =>
+    {
+        context.Response.ContentType = "text/html";
+        await context.Response.SendFileAsync(Path.Combine(uiDistPath, "index.html"));
+    });
+}
 
 app.Run();
