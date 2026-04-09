@@ -12,7 +12,7 @@ This directory contains the NSwag configuration for generating TypeScript API cl
 
 The `PerpendicularityApi.nswag` file configures how the TypeScript client is generated:
 
-- **Source**: Points to `http://localhost:63000/swagger/v1/swagger.json`
+- **Source**: Points to `http://localhost:63000/swagger/v0.1/swagger.json`
 - **Output**: Generates `PerpendicularityApiClient.ts` in this directory
 - **Template**: Uses Fetch API for HTTP requests
 - **Type Style**: Generates TypeScript classes and enums
@@ -35,7 +35,7 @@ console.log(health)
 The client should be regenerated whenever the API changes:
 
 1. Update your .NET API controllers/models
-2. Start the API (it exposes the OpenAPI spec at `/swagger/v1/swagger.json`)
+2. Start the API (it exposes the OpenAPI spec at `/swagger/v0.1/swagger.json`)
 3. Run `npm run build-perpendicularity-api-client`
 4. The TypeScript client will be updated with new endpoints/models
 

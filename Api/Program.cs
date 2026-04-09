@@ -79,6 +79,13 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    var version = Vulpes.Perpendicularity.Core.Configuration.ApplicationConfiguration.Version;
+    options.SwaggerDoc(version, new OpenApiInfo
+    {
+        Title = "Perpendicularity API",
+        Version = version
+    });
+
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -121,8 +128,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    var version = Vulpes.Perpendicularity.Core.Configuration.ApplicationConfiguration.Version;
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"Perpendicularity API {version}"));
 }
 
 app.UseCors("AllowFrontend");

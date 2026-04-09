@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-// TODO: Replace with TanStack Query to fetch from API
-// API should expose ApplicationConfiguration.Version (currently "Alpha 0.1")
-const apiVersion = ref('Alpha 0.1')
+// TODO: Replace with query to fetch from API
+// API should expose ApplicationConfiguration.Version (currently "v0.1")
+const apiVersion = ref('v0.1')
 </script>
