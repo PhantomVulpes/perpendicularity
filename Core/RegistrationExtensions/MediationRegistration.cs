@@ -12,7 +12,7 @@ namespace Vulpes.Perpendicularity.Core.RegistrationExtensions;
 
 public static class MediationRegistration
 {
-    public static IServiceCollection InjectDomain(this IServiceCollection services) => services
+    public static IServiceCollection InjectCore(this IServiceCollection services) => services
         .AddTransient<IKnoxHasher, KnoxHasher>()
         .InjectCommands()
         .InjectQueries()
