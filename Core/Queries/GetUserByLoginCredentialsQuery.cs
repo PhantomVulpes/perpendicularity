@@ -1,4 +1,5 @@
 using System.Security.Authentication;
+using Vulpes.Electrum.Domain.Extensions;
 using Vulpes.Electrum.Domain.Querying;
 using Vulpes.Electrum.Domain.Security;
 using Vulpes.Perpendicularity.Core.Data;
@@ -6,7 +7,7 @@ using Vulpes.Perpendicularity.Core.Models;
 
 namespace Vulpes.Perpendicularity.Core.Queries;
 
-public record GetUserByLoginCredentialsQuery(string FirstName, string LastName, string PasswordRaw) : Query;
+public record GetUserByLoginCredentialsQuery(string FirstName, string LastName, string PasswordRaw) : Query<RegisteredUser>;
 public class GetUserByLoginCredentialsQueryHandler : QueryHandler<GetUserByLoginCredentialsQuery, RegisteredUser>
 {
     private readonly IQueryProvider<RegisteredUser> queryProvider;
@@ -38,4 +39,7 @@ public class GetUserByLoginCredentialsQueryHandler : QueryHandler<GetUserByLogin
 
         return user;
     }
+
+    protected override Task<AccessResult> InternalValidateAccessAsync(GetUserByLoginCredentialsQuery query) => AccessResult.Success().FromResult();
+
 }

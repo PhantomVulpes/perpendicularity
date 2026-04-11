@@ -5,7 +5,7 @@ using Vulpes.Perpendicularity.Core.Models;
 
 namespace Vulpes.Perpendicularity.Core.Queries;
 
-public record GetAllUsersQuery(Guid AuthenticatedUserKey) : Query;
+public record GetAllUsersQuery(Guid AuthenticatedUserKey) : Query<IQueryable<RegisteredUser>>;
 public class GetAllUsersQueryHandler : QueryHandler<GetAllUsersQuery, IQueryable<RegisteredUser>>
 {
     private readonly IQueryProvider<RegisteredUser> userQueryProvider;
@@ -19,13 +19,18 @@ public class GetAllUsersQueryHandler : QueryHandler<GetAllUsersQuery, IQueryable
 
     protected override async Task<IQueryable<RegisteredUser>> InternalRequestAsync(GetAllUsersQuery query)
     {
-        var authenticatedUser = await userRepository.GetAsync(query.AuthenticatedUserKey);
-        if (authenticatedUser.Status != UserStatus.Admin)
-        {
-            // There's no access check on queries (should be added to Electrum), so we gotta do this.
-            AccessResult.Fail($"{nameof(RegisteredUser)} {authenticatedUser.ToLogName()} does not have ${nameof(UserStatus.Admin)} access.").ThrowIfAccessDenied();
-        }
-
         return await userQueryProvider.BeginQueryAsync();
     }
+
+    protected async override Task<AccessResult> InternalValidateAccessAsync(GetAllUsersQuery query)
+    {
+        var authenticatedUser = await userRepository.GetAsync(query.AuthenticatedUserKey);
+        if (authenticatedUser.Status == UserStatus.Admin)
+        {
+            return AccessResult.Success();
+        }
+
+        return AccessResult.Fail($"{nameof(RegisteredUser)} {authenticatedUser.ToLogName()} does not have ${nameof(UserStatus.Admin)} access.");
+    }
+
 }
