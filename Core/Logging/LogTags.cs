@@ -11,7 +11,4 @@ public static class LogTags
     // Database Tags
     public static string DatabaseOpened => $"[{nameof(DatabaseOpened)}]";
     public static string QueryReport => $"[{nameof(QueryReport)}]";
-    public static string EntityDeleted => $"[{nameof(EntityDeleted)}]";
-    public static string EntityUpdated => $"[{nameof(EntityUpdated)}]";
-    public static string EntityInserted => $"[{nameof(EntityInserted)}]";
 }
