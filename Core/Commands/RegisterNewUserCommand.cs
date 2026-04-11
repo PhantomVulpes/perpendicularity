@@ -1,7 +1,7 @@
 using Vulpes.Electrum.Domain.Commanding;
+using Vulpes.Electrum.Domain.Data;
 using Vulpes.Electrum.Domain.Extensions;
 using Vulpes.Electrum.Domain.Security;
-using Vulpes.Perpendicularity.Core.Data;
 using Vulpes.Perpendicularity.Core.Models;
 
 namespace Vulpes.Perpendicularity.Core.Commands;
@@ -31,7 +31,7 @@ public class RegisterNewUserCommandHandler : CommandHandler<RegisterNewUserComma
         };
 
         // TODO: Electrum should get the Save, Insert, and Validation models for this.
-        await registeredUserModelRepository.InsertAsync(newUser);
+        await registeredUserModelRepository.InsertAsync(newUser.PrepareForInsert());
     }
 
     // Any user can register.

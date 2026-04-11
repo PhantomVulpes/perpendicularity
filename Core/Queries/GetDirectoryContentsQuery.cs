@@ -1,7 +1,8 @@
 using System;
+using Vulpes.Electrum.Domain.Data;
+using Vulpes.Electrum.Domain.Extensions;
 using Vulpes.Electrum.Domain.Querying;
 using Vulpes.Electrum.Domain.Security;
-using Vulpes.Perpendicularity.Core.Data;
 using Vulpes.Perpendicularity.Core.Models;
 using Vulpes.Perpendicularity.Core.QueriedModels;
 
@@ -20,7 +21,7 @@ public class GetDirectoryContentsQueryHandler : QueryHandler<GetDirectoryContent
     }
 
 
-    protected override async Task<DirectoryContents> InternalRequestAsync(GetDirectoryContentsQuery query)
+    protected override Task<DirectoryContents> InternalRequestAsync(GetDirectoryContentsQuery query)
     {
         var currentDirectory = Path.Combine(query.RootDirectory.Path, query.RemainingPath);
 
@@ -40,7 +41,7 @@ public class GetDirectoryContentsQueryHandler : QueryHandler<GetDirectoryContent
             Directories = directories.Select(Path.GetFileName).Where(name => !string.IsNullOrEmpty(name))!
         };
 
-        return result;
+        return result.FromResult();
     }
 
     protected async override Task<AccessResult> InternalValidateAccessAsync(GetDirectoryContentsQuery query)

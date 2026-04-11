@@ -1,7 +1,8 @@
 using System.IO.Compression;
+using Vulpes.Electrum.Domain.Data;
+using Vulpes.Electrum.Domain.Extensions;
 using Vulpes.Electrum.Domain.Querying;
 using Vulpes.Electrum.Domain.Security;
-using Vulpes.Perpendicularity.Core.Data;
 using Vulpes.Perpendicularity.Core.Models;
 using Vulpes.Perpendicularity.Core.QueriedModels;
 
@@ -20,7 +21,7 @@ public class GetFilesAsZipQueryHandler : QueryHandler<GetFilesAsZipQuery, ZipFil
         this.settingsRepository = settingsRepository;
     }
 
-    protected override async Task<ZipFileForDownload> InternalRequestAsync(GetFilesAsZipQuery query)
+    protected override Task<ZipFileForDownload> InternalRequestAsync(GetFilesAsZipQuery query)
     {
         var validatedFiles = GetValidatedFiles(query.RootDirectory.Path, query.RelativeFilePaths, validateAccess: false);
 
@@ -44,7 +45,7 @@ public class GetFilesAsZipQueryHandler : QueryHandler<GetFilesAsZipQuery, ZipFil
                 ? $"{Path.GetFileNameWithoutExtension(query.RelativeFilePaths.First())}.zip"
                 : $"download_{DateTime.UtcNow:yyyyMMdd_HHmmss}.zip";
 
-            return new ZipFileForDownload(tempZipPath, zipFileName);
+            return new ZipFileForDownload(tempZipPath, zipFileName).FromResult();
         }
         catch
         {

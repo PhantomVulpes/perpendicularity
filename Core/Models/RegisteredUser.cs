@@ -1,3 +1,6 @@
+using Vulpes.Electrum.Domain.Models;
+using Vulpes.Electrum.Domain.Validation;
+using Vulpes.Perpendicularity.Core.Logging;
 using Vulpes.Perpendicularity.Core.ValueObjects;
 
 namespace Vulpes.Perpendicularity.Core.Models;
@@ -27,6 +30,35 @@ public record RegisteredUser : AggregateRoot
     public DateTimeOffset LastLoginDate { get; init; } = DateTimeOffset.MinValue;
 
     public override string ToLogName() => $"{LastName} {FirstName} ({Key})";
+
+    public AggregateRootValidationModel<RegisteredUser> Validate()
+    {
+        var validationBuilder = new ValidationBuilder()
+            .InvalidIf(() => Key == Guid.Empty, () => new ElectrumValidationError(ErrorCodes.INVALID_EMPTY_VALUE, $"{nameof(Key)} cannot be empty."));
+
+        return new(this, validationBuilder);
+    }
+
+    public SaveModel<RegisteredUser> PrepareForSave()
+    {
+        var validatedObject = (this with
+        {
+            // Set any values that should be changed like last modified date or something.
+            EditingToken = DateTime.UtcNow.ToLongDateString()
+        }).Validate();
+
+        return new(validatedObject, EditingToken);
+    }
+
+    public InsertModel<RegisteredUser> PrepareForInsert()
+    {
+        var validatedObject = (this with
+        {
+            EditingToken = DateTime.UtcNow.ToLongDateString()
+        }).Validate();
+
+        return new(validatedObject);
+    }
 }
 
 public enum UserStatus

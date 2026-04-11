@@ -1,7 +1,7 @@
-using DnsClient;
+using Vulpes.Electrum.Domain.Data;
+using Vulpes.Electrum.Domain.Extensions;
 using Vulpes.Electrum.Domain.Querying;
 using Vulpes.Electrum.Domain.Security;
-using Vulpes.Perpendicularity.Core.Data;
 using Vulpes.Perpendicularity.Core.Models;
 using Vulpes.Perpendicularity.Core.QueriedModels;
 
@@ -20,7 +20,7 @@ public class GetFileForDownloadQueryHandler : QueryHandler<GetFileForDownloadQue
         this.settingsRepository = settingsRepository;
     }
 
-    protected override async Task<FileForDownload> InternalRequestAsync(GetFileForDownloadQuery query)
+    protected override Task<FileForDownload> InternalRequestAsync(GetFileForDownloadQuery query)
     {
         var (normalizedFullPath, _) = GetPaths(query.RelativeFilePath, query.RootDirectory.Path);
 
@@ -30,7 +30,7 @@ public class GetFileForDownloadQueryHandler : QueryHandler<GetFileForDownloadQue
             throw new FileNotFoundException($"File not found: {query.RelativeFilePath}");
         }
 
-        return new FileForDownload(normalizedFullPath, Path.GetFileName(normalizedFullPath));
+        return new FileForDownload(normalizedFullPath, Path.GetFileName(normalizedFullPath)).FromResult();
     }
 
     protected async override Task<AccessResult> InternalValidateAccessAsync(GetFileForDownloadQuery query)

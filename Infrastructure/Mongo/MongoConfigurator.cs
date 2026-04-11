@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
+using Vulpes.Electrum.Domain.Models;
 using Vulpes.Perpendicularity.Core.Models;
 using Vulpes.Perpendicularity.Core.ValueObjects;
 using Vulpes.Perpendicularity.Infrastructure.Mongo.Conventions;

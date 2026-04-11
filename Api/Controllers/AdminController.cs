@@ -38,7 +38,7 @@ public class AdminController : PerpendicularityController
     public async Task<ActionResult<ApplicationSettings>> GetApplicationSettings()
     {
         var query = new GetApplicationSettingsQuery(RegisteredUser.Key);
-        var settings = await mediator.RequestResponseAsync<GetApplicationSettingsQuery, ApplicationSettings>(query);
+        var settings = await mediator.RequestResponseAsync(query);
 
         return Ok(settings);
     }

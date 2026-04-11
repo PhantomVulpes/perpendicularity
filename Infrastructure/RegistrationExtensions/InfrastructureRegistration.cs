@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using Vulpes.Electrum.Domain.Data;
+using Vulpes.Electrum.Domain.Mongo;
 using Vulpes.Perpendicularity.Core.Data;
 using Vulpes.Perpendicularity.Core.Models;
 using Vulpes.Perpendicularity.Infrastructure.Mongo;
