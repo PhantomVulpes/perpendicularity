@@ -34,7 +34,7 @@ public record ApplicationSettings : AggregateRoot
         var validatedObject = (this with
         {
             // Set any values that should be changed like last modified date or something.
-            EditingToken = DateTime.UtcNow.ToLongDateString()
+            EditingToken = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
         }).Validate();
 
         return new(validatedObject, EditingToken);
