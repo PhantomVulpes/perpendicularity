@@ -1,7 +1,7 @@
 using Vulpes.Electrum.Domain.Commanding;
+using Vulpes.Electrum.Domain.Data;
 using Vulpes.Electrum.Domain.Extensions;
 using Vulpes.Electrum.Domain.Security;
-using Vulpes.Perpendicularity.Core.Data;
 using Vulpes.Perpendicularity.Core.Models;
 
 namespace Vulpes.Perpendicularity.Core.Commands;
@@ -23,7 +23,7 @@ public class LogInCommandHandler : CommandHandler<LogInCommand>
             LastLoginDate = DateTime.UtcNow
         };
 
-        await userRepository.SaveAsync(command.User.EditingToken, updatedUser);
+        await userRepository.SaveAsync(updatedUser.PrepareForSave());
     }
 
     protected override Task<AccessResult> InternalValidateAccessAsync(LogInCommand command) => AccessResult.Success().FromResult();

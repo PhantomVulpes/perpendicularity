@@ -1,11 +1,10 @@
 using Vulpes.Electrum.Domain.Commanding;
+using Vulpes.Electrum.Domain.Data;
 using Vulpes.Electrum.Domain.Security;
-using Vulpes.Perpendicularity.Core.Data;
 using Vulpes.Perpendicularity.Core.Models;
 
 namespace Vulpes.Perpendicularity.Core.Commands;
 
-// TODO: Also need a command to set any user other than yourself to APPROVED.
 public record ApproveUserCommand(Guid AuthenticatedUserKey, Guid RequestedUserKey) : Command;
 public class ApproveUserCommandHandler : CommandHandler<ApproveUserCommand>
 {
@@ -23,8 +22,7 @@ public class ApproveUserCommandHandler : CommandHandler<ApproveUserCommand>
             Status = UserStatus.Approved,
         };
 
-        // TODO: Still no editing token stuff implemented, so don't worry about it.
-        await userRepository.SaveAsync(updatedRequestedUser.EditingToken, updatedRequestedUser);
+        await userRepository.SaveAsync(updatedRequestedUser.PrepareForSave());
     }
 
     protected override async Task<AccessResult> InternalValidateAccessAsync(ApproveUserCommand command)

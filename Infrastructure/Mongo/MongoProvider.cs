@@ -4,6 +4,8 @@ using MongoDB.Driver;
 using MongoDB.Driver.Core.Events;
 using MongoDB.Driver.Linq;
 using System.Collections.Concurrent;
+using Vulpes.Electrum.Domain.Data;
+using Vulpes.Electrum.Domain.Mongo;
 using Vulpes.Perpendicularity.Core.Configuration;
 using Vulpes.Perpendicularity.Core.Logging;
 
@@ -82,26 +84,4 @@ public class MongoProvider : IMongoProvider
     private void Record(CommandStartedEvent startEvent) => logger.LogDebug($"{LogTags.QueryReport} Reporting query - {startEvent.Command}");
 
     private void Validate(CommandStartedEvent startEvent) => logger.LogDebug($"{LogTags.UnimplementedMethod} {nameof(Validate)} in {nameof(MongoProvider)} was called but not implemented.");
-}
-
-public class Tester
-{
-    public static void Ping()
-    {
-        var connectionString = "mongodb://localhost:27017";
-        var client = new MongoClient(connectionString);
-
-        try
-        {
-
-            var database = client.GetDatabase("admin");
-            var command = new BsonDocument("ping", 1);
-            var result = database.RunCommand<BsonDocument>(command);
-            Console.WriteLine("MongoDB connection successful: " + result.ToJson());
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("MongoDB connection failed: " + ex.Message);
-        }
-    }
 }

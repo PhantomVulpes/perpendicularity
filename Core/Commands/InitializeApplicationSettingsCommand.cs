@@ -1,7 +1,7 @@
 using Vulpes.Electrum.Domain.Commanding;
+using Vulpes.Electrum.Domain.Data;
 using Vulpes.Electrum.Domain.Exceptions;
 using Vulpes.Electrum.Domain.Security;
-using Vulpes.Perpendicularity.Core.Data;
 using Vulpes.Perpendicularity.Core.Models;
 
 namespace Vulpes.Perpendicularity.Core.Commands;
@@ -25,7 +25,7 @@ public class InitializeApplicationSettingsCommandHandler : CommandHandler<Initia
             Key = ApplicationSettings.GlobalApplicationSettingsKey
         };
 
-        await settingsRepository.InsertAsync(settings);
+        await settingsRepository.InsertAsync(settings.PrepareForInsert());
     }
 
     protected override async Task<AccessResult> InternalValidateAccessAsync(InitializeApplicationSettingsCommand command)

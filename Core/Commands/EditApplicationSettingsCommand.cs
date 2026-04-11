@@ -1,6 +1,6 @@
 using Vulpes.Electrum.Domain.Commanding;
+using Vulpes.Electrum.Domain.Data;
 using Vulpes.Electrum.Domain.Security;
-using Vulpes.Perpendicularity.Core.Data;
 using Vulpes.Perpendicularity.Core.Models;
 
 namespace Vulpes.Perpendicularity.Core.Commands;
@@ -24,7 +24,7 @@ public class EditApplicationSettingsCommandHandler : CommandHandler<EditApplicat
             DownloadPaths = command.DirectoryConfigurations
         };
 
-        await appSettingsRepository.SaveAsync(newApplicationSettings.EditingToken, newApplicationSettings);
+        await appSettingsRepository.SaveAsync(newApplicationSettings.PrepareForSave());
     }
 
     protected override async Task<AccessResult> InternalValidateAccessAsync(EditApplicationSettingsCommand command)

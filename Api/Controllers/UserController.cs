@@ -37,7 +37,7 @@ public class UserController : PerpendicularityController
     public async Task<ActionResult<LoginResponse>> LoginAsync(LoginRequest request)
     {
         var query = request.ToQuery();
-        var user = await mediator.RequestResponseAsync<GetUserByLoginCredentialsQuery, RegisteredUser>(query);
+        var user = await mediator.RequestResponseAsync(query);
 
         var token = jwtTokenService.GenerateToken(user);
 
@@ -54,7 +54,7 @@ public class UserController : PerpendicularityController
     public async Task<ActionResult<List<RegisteredUser>>> GetAllUsersAsync()
     {
         var query = new GetAllUsersQuery(RegisteredUser.Key);
-        var users = await mediator.RequestResponseAsync<GetAllUsersQuery, IQueryable<RegisteredUser>>(query);
+        var users = await mediator.RequestResponseAsync(query);
 
         return Ok(users.ToList());
     }

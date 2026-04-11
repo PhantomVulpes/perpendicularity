@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using Vulpes.Perpendicularity.Core.Data;
+using Vulpes.Electrum.Domain.Data;
 using Vulpes.Perpendicularity.Core.Models;
 
 namespace Vulpes.Perpendicularity.Api.Middleware;

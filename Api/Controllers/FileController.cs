@@ -24,12 +24,12 @@ public class FileController : PerpendicularityController
     {
         var decodedPath = string.IsNullOrEmpty(remainingPath) ? string.Empty : Uri.UnescapeDataString(remainingPath);
 
-        var desiredRoot = (await mediator.RequestResponseAsync<GetDirectoryConfigurationsQuery, IEnumerable<DirectoryConfiguration>>(new(RegisteredUser.Key)))
+        var desiredRoot = (await mediator.RequestResponseAsync(new GetDirectoryConfigurationsQuery(RegisteredUser.Key)))
             .Single(config => config.Alias == rootDirectory)
             ;
 
         var query = new GetDirectoryContentsQuery(RegisteredUser.Key, desiredRoot, decodedPath);
-        var contents = await mediator.RequestResponseAsync<GetDirectoryContentsQuery, DirectoryContents>(query);
+        var contents = await mediator.RequestResponseAsync(query);
 
         return Ok(DirectoryContentsResponse.FromDirectoryContents(contents));
     }
@@ -37,7 +37,7 @@ public class FileController : PerpendicularityController
     [HttpGet("root-directory")]
     public async Task<ActionResult<IEnumerable<string>>> GetAliases()
     {
-        var result = await mediator.RequestResponseAsync<GetDirectoryConfigurationsQuery, IEnumerable<DirectoryConfiguration>>(new(RegisteredUser.Key));
+        var result = await mediator.RequestResponseAsync(new GetDirectoryConfigurationsQuery(RegisteredUser.Key));
         return Ok(result.Select(config => config.Alias));
     }
 
@@ -46,11 +46,11 @@ public class FileController : PerpendicularityController
     {
         var decodedPath = Uri.UnescapeDataString(filePath);
 
-        var desiredRoot = (await mediator.RequestResponseAsync<GetDirectoryConfigurationsQuery, IEnumerable<DirectoryConfiguration>>(new(RegisteredUser.Key)))
+        var desiredRoot = (await mediator.RequestResponseAsync(new GetDirectoryConfigurationsQuery(RegisteredUser.Key)))
             .Single(config => config.Alias == rootDirectory);
 
         var query = new GetFileForDownloadQuery(RegisteredUser.Key, desiredRoot, decodedPath);
-        var fileInfo = await mediator.RequestResponseAsync<GetFileForDownloadQuery, FileForDownload>(query);
+        var fileInfo = await mediator.RequestResponseAsync(query);
 
         var fileStream = System.IO.File.OpenRead(fileInfo.FullPath);
         return File(fileStream, "application/octet-stream", fileInfo.FileName);
@@ -64,11 +64,11 @@ public class FileController : PerpendicularityController
             return BadRequest("At least one file path must be provided.");
         }
 
-        var desiredRoot = (await mediator.RequestResponseAsync<GetDirectoryConfigurationsQuery, IEnumerable<DirectoryConfiguration>>(new(RegisteredUser.Key)))
+        var desiredRoot = (await mediator.RequestResponseAsync(new GetDirectoryConfigurationsQuery(RegisteredUser.Key)))
             .Single(config => config.Alias == request.RootDirectory);
 
         var query = new GetFilesAsZipQuery(RegisteredUser.Key, desiredRoot, request.FilePaths);
-        var zipInfo = await mediator.RequestResponseAsync<GetFilesAsZipQuery, ZipFileForDownload>(query);
+        var zipInfo = await mediator.RequestResponseAsync(query);
         // Use TempFileStream to automatically delete the temp file after the response is sent
         var fileStream = new TempFileStream(zipInfo.TempFilePath, FileMode.Open, FileAccess.Read, FileShare.None);
 
