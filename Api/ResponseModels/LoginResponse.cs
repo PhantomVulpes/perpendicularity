@@ -1,6 +1,6 @@
 using Vulpes.Perpendicularity.Core.Models;
 
-namespace Vulpes.Perpendicularity.Api.RequestModels;
+namespace Vulpes.Perpendicularity.Api.ResponseModels;
 
 public record LoginResponse
 {

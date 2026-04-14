@@ -41,5 +41,4 @@ public class GetUserByLoginCredentialsQueryHandler : QueryHandler<GetUserByLogin
     }
 
     protected override Task<AccessResult> InternalValidateAccessAsync(GetUserByLoginCredentialsQuery query) => AccessResult.Success().FromResult();
-
 }

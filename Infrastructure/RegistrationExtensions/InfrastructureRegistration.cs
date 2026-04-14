@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Vulpes.Electrum.Domain.Data;
 using Vulpes.Electrum.Domain.Mongo;
-using Vulpes.Perpendicularity.Core.Data;
 using Vulpes.Perpendicularity.Core.Models;
 using Vulpes.Perpendicularity.Infrastructure.Mongo;
 
@@ -11,7 +10,7 @@ public static class InfrastructureRegistration
 {
     public static IServiceCollection InjectInfrastructure(this IServiceCollection services) => services
         .InjectMongoServices()
-        .InjectRepositories()
+        .InjectQueryProviders()
         ;
 
     public static IServiceCollection InjectMongoServices(this IServiceCollection services) => services
@@ -19,7 +18,7 @@ public static class InfrastructureRegistration
         .AddTransient(typeof(IModelRepository<>), typeof(MongoRepository<>))
         ;
 
-    private static IServiceCollection InjectRepositories(this IServiceCollection services) => services
+    private static IServiceCollection InjectQueryProviders(this IServiceCollection services) => services
         .AddTransient<IQueryProvider<RegisteredUser>, MongoQueryProvider<RegisteredUser>>()
         ;
 }

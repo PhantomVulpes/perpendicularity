@@ -27,5 +27,4 @@ public class LogInCommandHandler : CommandHandler<LogInCommand>
     }
 
     protected override Task<AccessResult> InternalValidateAccessAsync(LogInCommand command) => AccessResult.Success().FromResult();
-
 }

@@ -30,7 +30,6 @@ public class RegisterNewUserCommandHandler : CommandHandler<RegisterNewUserComma
             Status = UserStatus.Unapproved,
         };
 
-        // TODO: Electrum should get the Save, Insert, and Validation models for this.
         await registeredUserModelRepository.InsertAsync(newUser.PrepareForInsert());
     }
 
