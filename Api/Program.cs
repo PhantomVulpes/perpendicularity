@@ -118,8 +118,8 @@ MongoConfigurator.Configure();
 
 // Dependencies.
 _ = builder.Services
-    .InjectInfrastructure()
     .InjectCore()
+    .InjectInfrastructure()
     ;
 
 var app = builder.Build();
