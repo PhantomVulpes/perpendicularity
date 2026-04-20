@@ -1,4 +1,4 @@
-import { RegisterNewUserRequest } from '../apiclients/PerpendicularityApiClient'
+import { RegisterNewUserRequest } from '../apiclients/Perpendicularity/PerpendicularityApiClient'
 import { createClient } from '../apiClient'
 
 export async function RegisterUser(firstName: string, lastName: string, password: string) {

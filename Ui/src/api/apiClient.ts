@@ -1,4 +1,4 @@
-import { Client } from './apiclients/PerpendicularityApiClient'
+import { Client } from './apiclients/Perpendicularity/PerpendicularityApiClient'
 import { useAuth } from '@/services/auth'
 
 // Use empty string to make requests relative to current origin

@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue'
-import type { LoginResponse } from '@/api/apiclients/PerpendicularityApiClient'
+import type { LoginResponse } from '@/api/apiclients/Perpendicularity/PerpendicularityApiClient'
 
 const STORAGE_KEY = 'perpendicularity_auth'
 

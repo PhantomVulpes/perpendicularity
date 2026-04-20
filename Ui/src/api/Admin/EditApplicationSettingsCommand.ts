@@ -1,5 +1,5 @@
 import { createAuthenticatedClient } from '../apiClient'
-import { DirectoryConfiguration, EditApplicationSettingsRequest } from '../apiclients/PerpendicularityApiClient'
+import { DirectoryConfiguration, EditApplicationSettingsRequest } from '../apiclients/Perpendicularity/PerpendicularityApiClient'
 
 export async function editApplicationSettings(directoryConfigurations: DirectoryConfiguration[]): Promise<void> {
   const client = createAuthenticatedClient()

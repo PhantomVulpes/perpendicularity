@@ -1,4 +1,4 @@
-import { LoginRequest, LoginResponse } from '../apiclients/PerpendicularityApiClient'
+import { LoginRequest, LoginResponse } from '../apiclients/Perpendicularity/PerpendicularityApiClient'
 import { createClient } from '../apiClient'
 
 export async function LoginUser(firstName: string, lastName: string, password: string): Promise<LoginResponse> {

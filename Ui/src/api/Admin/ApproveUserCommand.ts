@@ -1,5 +1,5 @@
 import { createAuthenticatedClient } from '../apiClient'
-import { ApproveUserRequest } from '../apiclients/PerpendicularityApiClient'
+import { ApproveUserRequest } from '../apiclients/Perpendicularity/PerpendicularityApiClient'
 
 export async function approveUser(userKey: string): Promise<void> {
   const client = createAuthenticatedClient()
