@@ -364,4 +364,7 @@ MigrationBackup/
 .ionide/
 
 # Fody - auto-generated XML schema
+
+# Auto-generated API clients
+Infrastructure/Zinc/ZincClient.cs
 FodyWeavers.xsd
