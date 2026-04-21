@@ -3,6 +3,7 @@ import { Client, LoginRequest } from './apiclients/Zinc/ZincClient'
 // Zinc configuration interface
 interface ZincConfig {
   apiUrl: string
+  assistanceProject?: string
   serviceAccount: {
     username: string
     password: string
@@ -63,6 +64,7 @@ async function loadZincConfig(): Promise<ZincConfig> {
       // Return default config on error
       return {
         apiUrl: 'http://shadesmar:60000',
+        assistanceProject: 'PERPUSER',
         serviceAccount: { username: '', password: '' }
       }
     })
@@ -206,4 +208,13 @@ export async function createAuthenticatedZincClient(): Promise<Client> {
 export async function createZincClient(): Promise<Client> {
   const config = await loadZincConfig()
   return new Client(config.apiUrl)
+}
+
+/**
+ * Gets the target Zinc project for assistance tickets.
+ * This is loaded from zinc-config.json so deployments can change it without a rebuild.
+ */
+export async function getAssistanceProject(): Promise<string> {
+  const config = await loadZincConfig()
+  return config.assistanceProject || (import.meta.env.PROD ? 'PERPUSER' : 'PERPTEST')
 }

@@ -97,6 +97,7 @@ import Textarea from 'primevue/textarea'
 import Message from 'primevue/message'
 import { useAuth } from '@/services/auth'
 import { createTicket } from '@/api/Zinc/CreateTicketCommand'
+import { getAssistanceProject } from '@/api/zincClient'
 
 const props = defineProps<{
   visible: boolean
@@ -162,9 +163,10 @@ const handleSubmit = async () => {
     // Create labels with username and "Request Assistance"
     const userName = `${user.value.firstName} ${user.value.lastName}`
     const labels = [userName, 'Request Assistance']
+    const ticketProject = await getAssistanceProject()
 
-    // Submit ticket to PERP project
-    await createTicket('PERPUSER', title.value, description.value, labels)
+    // Submit ticket to runtime-configured project
+    await createTicket(ticketProject, title.value, description.value, labels)
 
     success.value = true
   } catch (err: any) {
