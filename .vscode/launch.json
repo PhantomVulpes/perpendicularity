@@ -1,0 +1,43 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "API",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/Api/bin/Debug/net9.0/Vulpes.Perpendicularity.Api.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/Api",
+      "stopAtEntry": false,
+      "console": "internalConsole"
+    },
+    {
+      "name": "UI",
+      "type": "node",
+      "request": "launch",
+      "preLaunchTask": "build-ui",
+      "cwd": "${workspaceFolder}/Ui",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name" : "Regenerate API Clients",
+      "preLaunchTask": "regenerate-all-api-clients",
+      "type": "node",
+      "request": "launch",
+      "args": ["--version"],
+      "console": "integratedTerminal",
+      "runtimeExecutable": "npm",
+      "cwd" : "${workspaceFolder}/Ui"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Suite",
+      "configurations": ["API", "Regenerate API Clients", "UI"]
+    }
+  ]
+}

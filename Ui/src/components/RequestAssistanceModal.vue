@@ -49,11 +49,6 @@
             required
           />
         </div>
-
-        <!-- Info Message -->
-        <Message severity="info" :closable="false">
-          This will create a ticket in the PERP project for support team review.
-        </Message>
       </div>
     </div>
 
