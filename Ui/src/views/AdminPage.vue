@@ -57,7 +57,7 @@ import { useRouter } from 'vue-router'
 import Card from 'primevue/card'
 import Message from 'primevue/message'
 import { useAuth } from '@/services/auth'
-import { UserStatus } from '@/api/apiclients/PerpendicularityApiClient'
+import { UserStatus } from '@/api/apiclients/Perpendicularity/PerpendicularityApiClient'
 
 const router = useRouter()
 const { user, isAuthenticated } = useAuth()

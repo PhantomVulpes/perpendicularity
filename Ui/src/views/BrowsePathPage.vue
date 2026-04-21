@@ -144,8 +144,8 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { createAuthenticatedClient } from '@/api/apiClient'
 import { useAuth } from '@/services/auth'
-import type { DirectoryContentsResponse } from '@/api/apiclients/PerpendicularityApiClient'
-import { DownloadFilesAsZipRequest } from '@/api/apiclients/PerpendicularityApiClient'
+import type { DirectoryContentsResponse } from '@/api/apiclients/Perpendicularity/PerpendicularityApiClient'
+import { DownloadFilesAsZipRequest } from '@/api/apiclients/Perpendicularity/PerpendicularityApiClient'
 
 const route = useRoute()
 const { token } = useAuth()

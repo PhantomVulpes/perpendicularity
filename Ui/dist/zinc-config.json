@@ -1,0 +1,7 @@
+{
+  "apiUrl": "http://shadesmar:60000",
+  "serviceAccount": {
+    "username": "PerpendicularityService",
+    "password": "shadesmar"
+  }
+}

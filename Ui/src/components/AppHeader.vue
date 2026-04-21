@@ -25,6 +25,18 @@
         
         <!-- Right: Auth Actions or User Info -->
         <div v-if="isAuthenticated" class="flex items-center gap-3">
+          <!-- Request Assistance Button (shown for all authenticated users) -->
+          <Button
+            label="Request Assistance"
+            icon="pi pi-question-circle"
+            @click="showAssistanceModal = true"
+            severity="help"
+            outlined
+            size="small"
+            aria-label="Request Assistance"
+            class="pr-4"
+          />
+
           <!-- Admin Button (only shown for administrators) -->
           <Button
             v-if="isAdmin"
@@ -76,17 +88,24 @@
       </div>
     </div>
   </div>
+
+  <!-- Request Assistance Modal -->
+  <RequestAssistanceModal v-model:visible="showAssistanceModal" />
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useAuth } from '@/services/auth'
 import { useRouter } from 'vue-router'
 import Button from 'primevue/button'
-import { UserStatus } from '@/api/apiclients/PerpendicularityApiClient'
+import { UserStatus } from '@/api/apiclients/Perpendicularity/PerpendicularityApiClient'
+import RequestAssistanceModal from './RequestAssistanceModal.vue'
 
 const { user, isAuthenticated, signOut } = useAuth()
 const router = useRouter()
+
+// Modal visibility
+const showAssistanceModal = ref(false)
 
 const isAdmin = computed(() => {
   return isAuthenticated.value && user.value?.status === UserStatus._4

@@ -148,7 +148,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Tag from 'primevue/tag'
 import { useAuth } from '@/services/auth'
-import { UserStatus, RegisteredUser } from '@/api/apiclients/PerpendicularityApiClient'
+import { UserStatus, RegisteredUser } from '@/api/apiclients/Perpendicularity/PerpendicularityApiClient'
 import { getAllUsers } from '@/api/User/GetAllUsersQuery'
 import { approveUser } from '@/api/Admin/ApproveUserCommand'
 

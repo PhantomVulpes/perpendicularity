@@ -368,3 +368,6 @@ MigrationBackup/
 # Auto-generated API clients
 Infrastructure/Zinc/ZincClient.cs
 FodyWeavers.xsd
+
+# Zinc service account configuration (contains secrets)
+Ui/public/zinc-config.json
