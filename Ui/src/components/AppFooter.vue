@@ -15,5 +15,5 @@ import { ref } from 'vue'
 
 // TODO: Replace with query to fetch from API
 // API should expose ApplicationConfiguration.Version (currently "v0.1")
-const apiVersion = ref('v0.1')
+const apiVersion = ref('v0.2')
 </script>
