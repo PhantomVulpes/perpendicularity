@@ -75,6 +75,12 @@
                 "cwd": "${workspaceFolder}/Ui"
             },
             "problemMatcher": []
+        },
+        {
+            "label": "build-with-ui",
+            "dependsOn": ["build-ui", "build"],
+            "dependsOrder": "sequence",
+            "problemMatcher": []
         }
     ]
 }

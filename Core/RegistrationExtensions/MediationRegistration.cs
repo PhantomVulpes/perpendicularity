@@ -17,6 +17,8 @@ public static class MediationRegistration
         .AddTransient<CommandHandler<InitializeApplicationSettingsCommand>, InitializeApplicationSettingsCommandHandler>()
         .AddTransient<CommandHandler<ApproveUserCommand>, ApproveUserCommandHandler>()
         .AddTransient<CommandHandler<EditApplicationSettingsCommand>, EditApplicationSettingsCommandHandler>()
+        .AddTransient<CommandHandler<AddExternalProjectCommand>, AddExternalProjectCommandHandler>()
+        .AddTransient<CommandHandler<DeleteExternalProjectCommand>, DeleteExternalProjectCommandHandler>()
         ;
 
     public static IServiceCollection InjectQueries(this IServiceCollection services) => services
@@ -27,6 +29,7 @@ public static class MediationRegistration
         .AddTransient<QueryHandler<GetDirectoryConfigurationsQuery, IEnumerable<DirectoryConfiguration>>, GetDirectoryConfigurationsQueryHandler>()
         .AddTransient<QueryHandler<GetFileForDownloadQuery, FileForDownload>, GetFileForDownloadQueryHandler>()
         .AddTransient<QueryHandler<GetFilesAsZipQuery, ZipFileForDownload>, GetFilesAsZipQueryHandler>()
+        .AddTransient<QueryHandler<GetAllExternalProjectsQuery, IQueryable<ExternalProject>>, GetAllExternalProjectsQueryHandler>()
         ;
 
     public static IServiceCollection InjectMediator(this IServiceCollection services)
@@ -41,6 +44,8 @@ public static class MediationRegistration
                 .Register(provider.GetRequiredService<CommandHandler<InitializeApplicationSettingsCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<ApproveUserCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<EditApplicationSettingsCommand>>())
+                .Register(provider.GetRequiredService<CommandHandler<AddExternalProjectCommand>>())
+                .Register(provider.GetRequiredService<CommandHandler<DeleteExternalProjectCommand>>())
                 ;
 
             _ = mediator
@@ -51,6 +56,7 @@ public static class MediationRegistration
                 .Register(provider.GetRequiredService<QueryHandler<GetDirectoryConfigurationsQuery, IEnumerable<DirectoryConfiguration>>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetFileForDownloadQuery, FileForDownload>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetFilesAsZipQuery, ZipFileForDownload>>())
+                .Register(provider.GetRequiredService<QueryHandler<GetAllExternalProjectsQuery, IQueryable<ExternalProject>>>())
                 ;
 
             return mediator;

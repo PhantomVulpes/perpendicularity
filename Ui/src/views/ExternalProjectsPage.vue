@@ -186,7 +186,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useToast } from 'primevue/usetoast'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
@@ -202,7 +201,6 @@ import { addExternalProject } from '@/api/ExternalProject/AddExternalProjectComm
 import { deleteExternalProject } from '@/api/ExternalProject/DeleteExternalProjectCommand'
 
 const router = useRouter()
-const toast = useToast()
 const { user, isAuthenticated } = useAuth()
 
 // Check if user is admin

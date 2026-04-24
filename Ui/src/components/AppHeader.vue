@@ -21,6 +21,28 @@
             <i class="pi pi-map text-xs"></i>
             Roadmap
           </RouterLink>
+          <Button
+            label="Other Projects"
+            icon="pi pi-globe"
+            @click="toggleExternalProjectsMenu"
+            severity="secondary"
+            text
+            size="small"
+            class="text-sm font-medium"
+            aria-label="Other Projects"
+          />
+          <Menu ref="externalProjectsMenu" :model="externalProjectMenuItems" :popup="true">
+            <template #item="{ item, props }">
+              <a 
+                v-bind="props.action"
+                class="flex items-center gap-2 px-3 py-2"
+                v-tooltip.right="item.data?.tooltip"
+              >
+                <i :class="item.icon" class="text-xs"></i>
+                <span>{{ item.label }}</span>
+              </a>
+            </template>
+          </Menu>
         </div>
         
         <!-- Right: Auth Actions or User Info -->
@@ -94,15 +116,54 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useAuth } from '@/services/auth'
 import { useRouter } from 'vue-router'
 import Button from 'primevue/button'
-import { UserStatus } from '@/api/apiclients/Perpendicularity/PerpendicularityApiClient'
+import Menu from 'primevue/menu'
+import type { MenuItem } from 'primevue/menuitem'
+import { UserStatus, ExternalProject } from '@/api/apiclients/Perpendicularity/PerpendicularityApiClient'
+import { getAllExternalProjects } from '@/api/ExternalProject/GetAllExternalProjectsQuery'
 import RequestAssistanceModal from './RequestAssistanceModal.vue'
 
 const { user, isAuthenticated, signOut } = useAuth()
 const router = useRouter()
+
+// External Projects
+const externalProjects = ref<ExternalProject[]>([])
+const externalProjectsMenu = ref()
+
+const toggleExternalProjectsMenu = (event: Event) => {
+  externalProjectsMenu.value.toggle(event)
+}
+
+const fetchExternalProjects = async () => {
+  try {
+    const projects = await getAllExternalProjects()
+    externalProjects.value = projects
+  } catch (error) {
+    console.error('Failed to fetch external projects:', error)
+  }
+}
+
+const externalProjectMenuItems = computed<MenuItem[]>(() => {
+  return externalProjects.value.map(project => ({
+    label: project.projectName || '',
+    icon: 'pi pi-external-link',
+    command: (_event) => {
+      if (project.projectUri) {
+        window.open(project.projectUri, '_blank')
+      }
+    },
+    data: {
+      tooltip: project.tooltip || ''
+    }
+  }))
+})
+
+onMounted(() => {
+  fetchExternalProjects()
+})
 
 // Modal visibility
 const showAssistanceModal = ref(false)

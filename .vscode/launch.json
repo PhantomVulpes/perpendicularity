@@ -13,31 +13,31 @@
       "console": "internalConsole"
     },
     {
-      "name": "UI",
+      "name": "Build UI",
       "type": "node",
       "request": "launch",
       "preLaunchTask": "build-ui",
-      "cwd": "${workspaceFolder}/Ui",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "args": ["--version"],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "runtimeExecutable": "npm",
+      "cwd": "${workspaceFolder}/Ui"
     },
     {
-      "name" : "Regenerate API Clients",
+      "name": "Regenerate API Clients",
       "preLaunchTask": "regenerate-all-api-clients",
       "type": "node",
       "request": "launch",
       "args": ["--version"],
       "console": "integratedTerminal",
       "runtimeExecutable": "npm",
-      "cwd" : "${workspaceFolder}/Ui"
+      "cwd": "${workspaceFolder}/Ui"
     }
   ],
   "compounds": [
     {
       "name": "Full Suite",
-      "configurations": ["API", "Regenerate API Clients", "UI"]
+      "configurations": ["API", "Regenerate API Clients", "Build UI"],
+      "stopAll": true
     }
   ]
 }
