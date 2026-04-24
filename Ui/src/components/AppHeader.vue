@@ -73,7 +73,12 @@
           />
 
           <div class="text-right">
-            <div class="font-semibold text-gray-800">{{ fullName }}</div>
+            <RouterLink 
+              to="/account" 
+              class="font-semibold text-gray-800 hover:text-blue-600 transition-colors cursor-pointer"
+            >
+              {{ fullName }}
+            </RouterLink>
             <div class="flex items-center justify-end gap-1 text-xs font-medium" :class="statusClasses">
               <i :class="statusIcon"></i>
               <span>{{ statusText }}</span>

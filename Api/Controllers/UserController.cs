@@ -59,4 +59,24 @@ public class UserController : PerpendicularityController
 
         return Ok(users.ToList());
     }
+
+    [HttpGet("{userKey:guid}")]
+    [ProducesResponseType(typeof(RegisteredUser), StatusCodes.Status200OK)]
+    public async Task<ActionResult<RegisteredUser>> GetUserByKeyAsync(Guid userKey)
+    {
+        var query = new GetUserByKeyQuery(RegisteredUser.Key, userKey);
+        var user = await mediator.RequestResponseAsync(query);
+
+        return Ok(user);
+    }
+
+    [HttpPut("edit")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult> EditUserAsync(EditUserRequest request)
+    {
+        var command = request.ToCommand(RegisteredUser);
+        await mediator.ExecuteCommandAsync(command);
+
+        return Ok();
+    }
 }

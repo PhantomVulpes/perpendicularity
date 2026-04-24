@@ -129,7 +129,7 @@ export class Client {
      * @param body (optional) 
      * @return OK
      */
-    edit(body: EditApplicationSettingsRequest | undefined): Promise<void> {
+    editPOST(body: EditApplicationSettingsRequest | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/admin/settings/edit";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -144,11 +144,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEdit(_response);
+            return this.processEditPOST(_response);
         });
     }
 
-    protected processEdit(response: Response): Promise<void> {
+    protected processEditPOST(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -618,6 +618,84 @@ export class Client {
         }
         return Promise.resolve<RegisteredUser[]>(null as any);
     }
+
+    /**
+     * @return OK
+     */
+    user(userKey: string): Promise<RegisteredUser> {
+        let url_ = this.baseUrl + "/api/user/{userKey}";
+        if (userKey === undefined || userKey === null)
+            throw new globalThis.Error("The parameter 'userKey' must be defined.");
+        url_ = url_.replace("{userKey}", encodeURIComponent("" + userKey));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUser(_response);
+        });
+    }
+
+    protected processUser(response: Response): Promise<RegisteredUser> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RegisteredUser.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RegisteredUser>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    editPUT(body: EditUserRequest | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/user/edit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processEditPUT(_response);
+        });
+    }
+
+    protected processEditPUT(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
 }
 
 export class AddExternalProjectRequest implements IAddExternalProjectRequest {
@@ -953,6 +1031,58 @@ export class EditApplicationSettingsRequest implements IEditApplicationSettingsR
 
 export interface IEditApplicationSettingsRequest {
     directoryConfigurations?: DirectoryConfiguration[] | null;
+}
+
+export class EditUserRequest implements IEditUserRequest {
+    userToEditKey?: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    passwordRaw?: string | null;
+    status?: UserStatus;
+
+    constructor(data?: IEditUserRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userToEditKey = _data["userToEditKey"] !== undefined ? _data["userToEditKey"] : null as any;
+            this.firstName = _data["firstName"] !== undefined ? _data["firstName"] : null as any;
+            this.lastName = _data["lastName"] !== undefined ? _data["lastName"] : null as any;
+            this.passwordRaw = _data["passwordRaw"] !== undefined ? _data["passwordRaw"] : null as any;
+            this.status = _data["status"] !== undefined ? _data["status"] : null as any;
+        }
+    }
+
+    static fromJS(data: any): EditUserRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new EditUserRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userToEditKey"] = this.userToEditKey !== undefined ? this.userToEditKey : null as any;
+        data["firstName"] = this.firstName !== undefined ? this.firstName : null as any;
+        data["lastName"] = this.lastName !== undefined ? this.lastName : null as any;
+        data["passwordRaw"] = this.passwordRaw !== undefined ? this.passwordRaw : null as any;
+        data["status"] = this.status !== undefined ? this.status : null as any;
+        return data;
+    }
+}
+
+export interface IEditUserRequest {
+    userToEditKey?: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    passwordRaw?: string | null;
+    status?: UserStatus;
 }
 
 export class ExternalProject implements IExternalProject {

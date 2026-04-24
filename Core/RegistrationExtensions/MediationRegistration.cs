@@ -19,11 +19,13 @@ public static class MediationRegistration
         .AddTransient<CommandHandler<EditApplicationSettingsCommand>, EditApplicationSettingsCommandHandler>()
         .AddTransient<CommandHandler<AddExternalProjectCommand>, AddExternalProjectCommandHandler>()
         .AddTransient<CommandHandler<DeleteExternalProjectCommand>, DeleteExternalProjectCommandHandler>()
+        .AddTransient<CommandHandler<EditUserCommand>, EditUserCommandHandler>()
         ;
 
     public static IServiceCollection InjectQueries(this IServiceCollection services) => services
         .AddTransient<QueryHandler<GetUserByLoginCredentialsQuery, RegisteredUser>, GetUserByLoginCredentialsQueryHandler>()
         .AddTransient<QueryHandler<GetAllUsersQuery, IQueryable<RegisteredUser>>, GetAllUsersQueryHandler>()
+        .AddTransient<QueryHandler<GetUserByKeyQuery, RegisteredUser>, GetUserByKeyQueryHandler>()
         .AddTransient<QueryHandler<GetApplicationSettingsQuery, ApplicationSettings>, GetApplicationSettingsQueryHandler>()
         .AddTransient<QueryHandler<GetDirectoryContentsQuery, DirectoryContents>, GetDirectoryContentsQueryHandler>()
         .AddTransient<QueryHandler<GetDirectoryConfigurationsQuery, IEnumerable<DirectoryConfiguration>>, GetDirectoryConfigurationsQueryHandler>()
@@ -46,11 +48,13 @@ public static class MediationRegistration
                 .Register(provider.GetRequiredService<CommandHandler<EditApplicationSettingsCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<AddExternalProjectCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<DeleteExternalProjectCommand>>())
+                .Register(provider.GetRequiredService<CommandHandler<EditUserCommand>>())
                 ;
 
             _ = mediator
                 .Register(provider.GetRequiredService<QueryHandler<GetUserByLoginCredentialsQuery, RegisteredUser>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetAllUsersQuery, IQueryable<RegisteredUser>>>())
+                .Register(provider.GetRequiredService<QueryHandler<GetUserByKeyQuery, RegisteredUser>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetApplicationSettingsQuery, ApplicationSettings>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetDirectoryContentsQuery, DirectoryContents>>())
                 .Register(provider.GetRequiredService<QueryHandler<GetDirectoryConfigurationsQuery, IEnumerable<DirectoryConfiguration>>>())

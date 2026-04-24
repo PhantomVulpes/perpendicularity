@@ -19,6 +19,11 @@ const routes: RouteRecordRaw[] = [
     component: LoginPage
   },
   {
+    path: '/account/:userKey?',
+    name: 'Account',
+    component: () => import('../views/AccountPage.vue')
+  },
+  {
     path: '/admin',
     name: 'Admin',
     component: () => import('../views/AdminPage.vue')

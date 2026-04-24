@@ -6,5 +6,5 @@ export async function editApplicationSettings(directoryConfigurations: Directory
   const request = new EditApplicationSettingsRequest({
     directoryConfigurations
   })
-  return await client.edit(request)
+  return await client.editPOST(request)
 }
