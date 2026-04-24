@@ -89,6 +89,44 @@ export class Client {
     }
 
     /**
+     * @param body (optional) 
+     * @return OK
+     */
+    rejectUser(body: RejectUserRequest | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/admin/reject-user";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRejectUser(_response);
+        });
+    }
+
+    protected processRejectUser(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
      * @return OK
      */
     settings(): Promise<ApplicationSettings> {
@@ -1383,6 +1421,42 @@ export interface IRegisteredUser {
     status?: UserStatus;
     creationDate?: Date;
     lastLoginDate?: Date;
+}
+
+export class RejectUserRequest implements IRejectUserRequest {
+    requestedUserKey?: string;
+
+    constructor(data?: IRejectUserRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.requestedUserKey = _data["requestedUserKey"] !== undefined ? _data["requestedUserKey"] : null as any;
+        }
+    }
+
+    static fromJS(data: any): RejectUserRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new RejectUserRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["requestedUserKey"] = this.requestedUserKey !== undefined ? this.requestedUserKey : null as any;
+        return data;
+    }
+}
+
+export interface IRejectUserRequest {
+    requestedUserKey?: string;
 }
 
 export enum UserStatus {

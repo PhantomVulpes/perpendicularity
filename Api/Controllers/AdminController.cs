@@ -34,6 +34,15 @@ public class AdminController : PerpendicularityController
         return Ok();
     }
 
+    [HttpPost("reject-user")]
+    public async Task<ActionResult> RejectUserAsync(RejectUserRequest request)
+    {
+        var command = request.ToCommand(RegisteredUser);
+        await mediator.ExecuteCommandAsync(command);
+
+        return Ok();
+    }
+
     [HttpGet("settings")]
     public async Task<ActionResult<ApplicationSettings>> GetApplicationSettings()
     {
