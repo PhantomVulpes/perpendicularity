@@ -14,5 +14,6 @@ public static class MongoRegistration
 
     public static IServiceCollection InjectQueryProviders(this IServiceCollection services) => services
         .AddTransient<IQueryProvider<Core.Models.RegisteredUser>, MongoQueryProvider<Core.Models.RegisteredUser>>()
+        .AddTransient<IQueryProvider<Core.Models.ExternalProject>, MongoQueryProvider<Core.Models.ExternalProject>>()
         ;
 }
