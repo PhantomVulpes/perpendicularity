@@ -67,5 +67,6 @@ public enum UserStatus
     Inactive,
     Unapproved,
     Approved,
+    Rejected,
     Admin
 }

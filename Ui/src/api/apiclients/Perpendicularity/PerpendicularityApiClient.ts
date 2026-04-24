@@ -1386,11 +1386,12 @@ export interface IRegisteredUser {
 }
 
 export enum UserStatus {
-    _0 = 0,
-    _1 = 1,
-    _2 = 2,
-    _3 = 3,
-    _4 = 4,
+    Unknown = "Unknown",
+    Inactive = "Inactive",
+    Unapproved = "Unapproved",
+    Approved = "Approved",
+    Rejected = "Rejected",
+    Admin = "Admin",
 }
 
 export class ApiException extends Error {

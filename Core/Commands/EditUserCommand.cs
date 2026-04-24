@@ -5,14 +5,7 @@ using Vulpes.Perpendicularity.Core.Models;
 
 namespace Vulpes.Perpendicularity.Core.Commands;
 
-public record EditUserCommand(
-    Guid UserToEditKey,
-    Guid AuthorizedUserKey,
-    string? FirstName = null,
-    string? LastName = null,
-    string? PasswordRaw = null,
-    UserStatus? Status = null
-) : Command;
+public record EditUserCommand(Guid UserToEditKey, Guid AuthorizedUserKey, string? FirstName = null, string? LastName = null, string? PasswordRaw = null, UserStatus? Status = null) : Command;
 
 public class EditUserCommandHandler : CommandHandler<EditUserCommand>
 {
@@ -29,6 +22,13 @@ public class EditUserCommandHandler : CommandHandler<EditUserCommand>
     {
         var userToEdit = await userRepository.GetAsync(command.UserToEditKey);
 
+        var newStatus = command.Status ?? userToEdit.Status;
+        if (userToEdit.Status == UserStatus.Rejected && command.Status != null)
+        {
+            // If a user was rejected and edited their profile, switch back to unapproved for an admin to review again.
+            newStatus = UserStatus.Unapproved;
+        }
+
         var updatedUser = userToEdit with
         {
             FirstName = command.FirstName ?? userToEdit.FirstName,
@@ -36,7 +36,7 @@ public class EditUserCommandHandler : CommandHandler<EditUserCommand>
             PasswordHash = command.PasswordRaw is not null
                 ? new(knoxHasher.HashPassword(command.PasswordRaw))
                 : userToEdit.PasswordHash,
-            Status = command.Status ?? userToEdit.Status,
+            Status = newStatus
         };
 
         await userRepository.SaveAsync(updatedUser.PrepareForSave());

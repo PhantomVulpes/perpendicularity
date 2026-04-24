@@ -74,6 +74,10 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers(options =>
 {
     options.Conventions.Add(new RouteTokenTransformerConvention(new LowercaseParameterTransformer()));
+})
+.AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -84,6 +88,9 @@ builder.Services.AddSwaggerGen(options =>
         Title = "Perpendicularity API",
         Version = version
     });
+
+    // Configure enums to be serialized as strings in the OpenAPI spec
+    options.SchemaFilter<EnumSchemaFilter>();
 
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {

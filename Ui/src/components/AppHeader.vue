@@ -174,7 +174,7 @@ onMounted(() => {
 const showAssistanceModal = ref(false)
 
 const isAdmin = computed(() => {
-  return isAuthenticated.value && user.value?.status === UserStatus._4
+  return isAuthenticated.value && user.value?.status === UserStatus.Admin
 })
 
 const fullName = computed(() => {
@@ -186,11 +186,12 @@ const statusText = computed(() => {
   if (!user.value) return ''
   
   switch (user.value.status) {
-    case UserStatus._0: return 'Unknown Status'
-    case UserStatus._1: return 'Inactive'
-    case UserStatus._2: return 'Awaiting Approval'
-    case UserStatus._3: return 'Approved'
-    case UserStatus._4: return 'Administrator'
+    case UserStatus.Unknown: return 'Unknown Status'
+    case UserStatus.Inactive: return 'Inactive'
+    case UserStatus.Unapproved: return 'Awaiting Approval'
+    case UserStatus.Approved: return 'Approved'
+    case UserStatus.Rejected: return 'Rejected'
+    case UserStatus.Admin: return 'Administrator'
     default: return ''
   }
 })
@@ -199,11 +200,12 @@ const statusIcon = computed(() => {
   if (!user.value) return ''
   
   switch (user.value.status) {
-    case UserStatus._0: return 'pi pi-question-circle'
-    case UserStatus._1: return 'pi pi-times-circle'
-    case UserStatus._2: return 'pi pi-clock'
-    case UserStatus._3: return 'pi pi-check-circle'
-    case UserStatus._4: return 'pi pi-shield'
+    case UserStatus.Unknown: return 'pi pi-question-circle'
+    case UserStatus.Inactive: return 'pi pi-times-circle'
+    case UserStatus.Unapproved: return 'pi pi-clock'
+    case UserStatus.Approved: return 'pi pi-check-circle'
+    case UserStatus.Rejected: return 'pi pi-times'
+    case UserStatus.Admin: return 'pi pi-shield'
     default: return ''
   }
 })
@@ -212,11 +214,12 @@ const statusClasses = computed(() => {
   if (!user.value) return ''
   
   switch (user.value.status) {
-    case UserStatus._0: return 'text-gray-500'
-    case UserStatus._1: return 'text-red-600'
-    case UserStatus._2: return 'text-amber-600'
-    case UserStatus._3: return 'text-green-600'
-    case UserStatus._4: return 'text-blue-600'
+    case UserStatus.Unknown: return 'text-gray-500'
+    case UserStatus.Inactive: return 'text-red-600'
+    case UserStatus.Unapproved: return 'text-amber-600'
+    case UserStatus.Approved: return 'text-green-600'
+    case UserStatus.Rejected: return 'text-red-700'
+    case UserStatus.Admin: return 'text-blue-600'
     default: return ''
   }
 })

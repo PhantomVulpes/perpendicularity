@@ -205,7 +205,7 @@ const { user, isAuthenticated } = useAuth()
 
 // Check if user is admin
 const isAdmin = computed(() => {
-  return isAuthenticated.value && user.value?.status === UserStatus._4
+  return isAuthenticated.value && user.value?.status === UserStatus.Admin
 })
 
 // State

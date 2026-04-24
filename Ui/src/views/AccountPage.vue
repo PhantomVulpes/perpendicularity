@@ -31,90 +31,60 @@
                 {{ successMessage }}
               </Message>
 
-              <!-- View Mode -->
-              <div v-if="!editMode" class="space-y-4">
+              <!-- Unified View/Edit Mode -->
+              <div class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">First Name</label>
-                    <div class="text-lg text-gray-900 dark:text-gray-100">{{ userProfile.firstName }}</div>
-                  </div>
-                  
-                  <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Last Name</label>
-                    <div class="text-lg text-gray-900 dark:text-gray-100">{{ userProfile.lastName }}</div>
-                  </div>
-
-                  <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Display Name</label>
-                    <div class="text-lg text-gray-900 dark:text-gray-100">{{ userProfile.displayName }}</div>
-                  </div>
-
-                  <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Status</label>
-                    <Tag 
-                      :value="getUserStatusLabel(userProfile.status)"
-                      :severity="getUserStatusSeverity(userProfile.status)"
-                    />
-                  </div>
-
-                  <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Member Since</label>
-                    <div class="text-lg text-gray-900 dark:text-gray-100">{{ formatDate(userProfile.creationDate) }}</div>
-                  </div>
-
-                  <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Last Login</label>
-                    <div class="text-lg text-gray-900 dark:text-gray-100">{{ formatDate(userProfile.lastLoginDate) }}</div>
-                  </div>
-                </div>
-
-                <!-- Edit Button -->
-                <div v-if="canEdit" class="flex justify-end mt-6">
-                  <Button
-                    label="Edit Profile"
-                    icon="pi pi-pencil"
-                    @click="enterEditMode"
-                    severity="primary"
-                  />
-                </div>
-              </div>
-
-              <!-- Edit Mode -->
-              <div v-else class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <!-- First Name -->
                   <div class="flex flex-col gap-2">
-                    <label for="firstName" class="font-semibold text-gray-700 dark:text-gray-300">First Name</label>
+                    <label for="firstName" class="text-sm font-semibold text-gray-700 dark:text-gray-300">First Name</label>
                     <InputText
+                      v-if="editMode"
                       id="firstName"
                       v-model="editForm.firstName"
                       placeholder="Enter first name"
                     />
+                    <div v-else class="text-lg text-gray-900 dark:text-gray-100">{{ userProfile.firstName }}</div>
                   </div>
                   
+                  <!-- Last Name -->
                   <div class="flex flex-col gap-2">
-                    <label for="lastName" class="font-semibold text-gray-700 dark:text-gray-300">Last Name</label>
+                    <label for="lastName" class="text-sm font-semibold text-gray-700 dark:text-gray-300">Last Name</label>
                     <InputText
+                      v-if="editMode"
                       id="lastName"
                       v-model="editForm.lastName"
                       placeholder="Enter last name"
                     />
+                    <div v-else class="text-lg text-gray-900 dark:text-gray-100">{{ userProfile.lastName }}</div>
                   </div>
 
-                  <div class="flex flex-col gap-2 md:col-span-2">
-                    <label for="password" class="font-semibold text-gray-700 dark:text-gray-300">New Password (optional)</label>
+                  <!-- Password -->
+                  <div class="flex flex-col gap-2">
+                    <label for="password" class="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      {{ editMode ? 'Change Password' : 'Password' }}
+                    </label>
                     <Password
+                      v-if="editMode"
                       id="password"
                       v-model="editForm.password"
                       placeholder="Leave blank to keep current password"
                       toggleMask
                       :feedback="false"
                     />
+                    <div v-else class="text-lg text-gray-900 dark:text-gray-100">[Redacted]</div>
                   </div>
 
-                  <!-- Admin-only status change -->
-                  <div v-if="isAdmin && !isViewingSelf" class="flex flex-col gap-2">
-                    <label for="status" class="font-semibold text-gray-700 dark:text-gray-300">User Status</label>
+                  <!-- Display Name -->
+                  <div class="flex flex-col gap-2">
+                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Display Name (Calculated value)</label>
+                    <div class="text-lg text-gray-900 dark:text-gray-100">{{ userProfile.displayName }}</div>
+                  </div>
+
+                  <!-- Status -->
+                  <div class="flex flex-col gap-2">
+                    <label for="status" class="text-sm font-semibold text-gray-700 dark:text-gray-300">Status</label>
                     <Dropdown
+                      v-if="editMode && isAdmin && !isViewingSelf"
                       id="status"
                       v-model="editForm.status"
                       :options="userStatusOptions"
@@ -122,24 +92,50 @@
                       optionValue="value"
                       placeholder="Select status"
                     />
+                    <Tag 
+                      v-else
+                      :value="getUserStatusLabel(userProfile.status)"
+                      :severity="getUserStatusSeverity(userProfile.status)"
+                    />
+                  </div>
+
+                  <!-- Member Since -->
+                  <div class="flex flex-col gap-2">
+                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Member Since</label>
+                    <div class="text-lg text-gray-900 dark:text-gray-100">{{ formatDate(userProfile.creationDate) }}</div>
+                  </div>
+
+                  <!-- Last Login -->
+                  <div class="flex flex-col gap-2">
+                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Last Login</label>
+                    <div class="text-lg text-gray-900 dark:text-gray-100">{{ formatDate(userProfile.lastLoginDate) }}</div>
                   </div>
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex justify-end gap-2 mt-6">
+                <div v-if="canEdit" class="flex justify-end gap-2 mt-6">
+                  <template v-if="editMode">
+                    <Button
+                      label="Cancel"
+                      icon="pi pi-times"
+                      @click="cancelEdit"
+                      severity="secondary"
+                      outlined
+                    />
+                    <Button
+                      label="Save Changes"
+                      icon="pi pi-check"
+                      @click="saveChanges"
+                      :loading="saving"
+                      severity="success"
+                    />
+                  </template>
                   <Button
-                    label="Cancel"
-                    icon="pi pi-times"
-                    @click="cancelEdit"
-                    severity="secondary"
-                    outlined
-                  />
-                  <Button
-                    label="Save Changes"
-                    icon="pi pi-check"
-                    @click="saveChanges"
-                    :loading="saving"
-                    severity="success"
+                    v-else
+                    label="Edit Profile or Change Password"
+                    icon="pi pi-pencil"
+                    @click="enterEditMode"
+                    severity="primary"
                   />
                 </div>
               </div>
@@ -200,7 +196,7 @@ const editForm = ref({
 
 // Check if user is admin
 const isAdmin = computed(() => {
-  return isAuthenticated.value && user.value?.status === UserStatus._4
+  return isAuthenticated.value && user.value?.status === UserStatus.Admin
 })
 
 // Check if viewing own profile
@@ -215,11 +211,12 @@ const canEdit = computed(() => {
 
 // User status options for dropdown
 const userStatusOptions = [
-  { label: 'Unknown', value: UserStatus._0 },
-  { label: 'Inactive', value: UserStatus._1 },
-  { label: 'Awaiting Approval', value: UserStatus._2 },
-  { label: 'Approved', value: UserStatus._3 },
-  { label: 'Administrator', value: UserStatus._4 }
+  { label: 'Unknown', value: UserStatus.Unknown },
+  { label: 'Inactive', value: UserStatus.Inactive },
+  { label: 'Awaiting Approval', value: UserStatus.Unapproved },
+  { label: 'Approved', value: UserStatus.Approved },
+  { label: 'Rejected', value: UserStatus.Rejected },
+  { label: 'Administrator', value: UserStatus.Admin }
 ]
 
 // Get user key from route or use current user
@@ -339,11 +336,12 @@ const formatDate = (date: Date | undefined): string => {
 // Get user status label
 const getUserStatusLabel = (status: UserStatus | undefined): string => {
   switch (status) {
-    case UserStatus._0: return 'Unknown'
-    case UserStatus._1: return 'Inactive'
-    case UserStatus._2: return 'Awaiting Approval'
-    case UserStatus._3: return 'Approved'
-    case UserStatus._4: return 'Administrator'
+    case UserStatus.Unknown: return 'Unknown'
+    case UserStatus.Inactive: return 'Inactive'
+    case UserStatus.Unapproved: return 'Awaiting Approval'
+    case UserStatus.Approved: return 'Approved'
+    case UserStatus.Rejected: return 'Rejected'
+    case UserStatus.Admin: return 'Administrator'
     default: return 'Unknown'
   }
 }
@@ -351,11 +349,12 @@ const getUserStatusLabel = (status: UserStatus | undefined): string => {
 // Get user status severity for Tag component
 const getUserStatusSeverity = (status: UserStatus | undefined): 'secondary' | 'info' | 'warn' | 'success' | 'danger' => {
   switch (status) {
-    case UserStatus._0: return 'secondary'
-    case UserStatus._1: return 'danger'
-    case UserStatus._2: return 'warn'
-    case UserStatus._3: return 'success'
-    case UserStatus._4: return 'info'
+    case UserStatus.Unknown: return 'secondary'
+    case UserStatus.Inactive: return 'danger'
+    case UserStatus.Unapproved: return 'warn'
+    case UserStatus.Approved: return 'success'
+    case UserStatus.Rejected: return 'danger'
+    case UserStatus.Admin: return 'info'
     default: return 'secondary'
   }
 }

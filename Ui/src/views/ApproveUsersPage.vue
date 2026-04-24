@@ -85,7 +85,7 @@
                   <Column header="Actions">
                     <template #body="slotProps">
                       <Button
-                        v-if="slotProps.data.status === UserStatus._2"
+                        v-if="slotProps.data.status === UserStatus.Unapproved"
                         label="Approve"
                         icon="pi pi-check"
                         @click="handleApproveUser(slotProps.data)"
@@ -158,7 +158,7 @@ const { user, isAuthenticated } = useAuth()
 
 // Check if user is admin
 const isAdmin = computed(() => {
-  return isAuthenticated.value && user.value?.status === UserStatus._4
+  return isAuthenticated.value && user.value?.status === UserStatus.Admin
 })
 
 // State
@@ -246,11 +246,12 @@ const copyToClipboard = async (text?: string) => {
 // Get user status label
 const getUserStatusLabel = (status?: UserStatus) => {
   switch (status) {
-    case UserStatus._0: return 'Unknown'
-    case UserStatus._1: return 'Inactive'
-    case UserStatus._2: return 'Unapproved'
-    case UserStatus._3: return 'Approved'
-    case UserStatus._4: return 'Admin'
+    case UserStatus.Unknown: return 'Unknown'
+    case UserStatus.Inactive: return 'Inactive'
+    case UserStatus.Unapproved: return 'Unapproved'
+    case UserStatus.Approved: return 'Approved'
+    case UserStatus.Rejected: return 'Rejected'
+    case UserStatus.Admin: return 'Admin'
     default: return 'Unknown'
   }
 }
@@ -258,11 +259,12 @@ const getUserStatusLabel = (status?: UserStatus) => {
 // Get user status severity for Tag component
 const getUserStatusSeverity = (status?: UserStatus) => {
   switch (status) {
-    case UserStatus._0: return 'secondary'
-    case UserStatus._1: return 'danger'
-    case UserStatus._2: return 'warning'
-    case UserStatus._3: return 'success'
-    case UserStatus._4: return 'info'
+    case UserStatus.Unknown: return 'secondary'
+    case UserStatus.Inactive: return 'danger'
+    case UserStatus.Unapproved: return 'warning'
+    case UserStatus.Approved: return 'success'
+    case UserStatus.Rejected: return 'danger'
+    case UserStatus.Admin: return 'info'
     default: return 'secondary'
   }
 }
