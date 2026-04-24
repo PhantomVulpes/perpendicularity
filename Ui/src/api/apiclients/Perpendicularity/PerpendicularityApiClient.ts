@@ -166,6 +166,129 @@ export class Client {
     /**
      * @return OK
      */
+    externalprojectAll(): Promise<ExternalProject[]> {
+        let url_ = this.baseUrl + "/api/externalproject";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processExternalprojectAll(_response);
+        });
+    }
+
+    protected processExternalprojectAll(response: Response): Promise<ExternalProject[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ExternalProject.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ExternalProject[]>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    externalprojectPOST(body: AddExternalProjectRequest | undefined): Promise<string> {
+        let url_ = this.baseUrl + "/api/externalproject";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processExternalprojectPOST(_response);
+        });
+    }
+
+    protected processExternalprojectPOST(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : null as any;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    externalprojectDELETE(projectKey: string): Promise<void> {
+        let url_ = this.baseUrl + "/api/externalproject/{projectKey}";
+        if (projectKey === undefined || projectKey === null)
+            throw new globalThis.Error("The parameter 'projectKey' must be defined.");
+        url_ = url_.replace("{projectKey}", encodeURIComponent("" + projectKey));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processExternalprojectDELETE(_response);
+        });
+    }
+
+    protected processExternalprojectDELETE(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     file(rootDirectory: string): Promise<DirectoryContentsResponse> {
         let url_ = this.baseUrl + "/api/file/{rootDirectory}";
         if (rootDirectory === undefined || rootDirectory === null)
@@ -497,6 +620,50 @@ export class Client {
     }
 }
 
+export class AddExternalProjectRequest implements IAddExternalProjectRequest {
+    projectName?: string | null;
+    projectUri?: string | null;
+    tooltip?: string | null;
+
+    constructor(data?: IAddExternalProjectRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.projectName = _data["projectName"] !== undefined ? _data["projectName"] : null as any;
+            this.projectUri = _data["projectUri"] !== undefined ? _data["projectUri"] : null as any;
+            this.tooltip = _data["tooltip"] !== undefined ? _data["tooltip"] : null as any;
+        }
+    }
+
+    static fromJS(data: any): AddExternalProjectRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddExternalProjectRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["projectName"] = this.projectName !== undefined ? this.projectName : null as any;
+        data["projectUri"] = this.projectUri !== undefined ? this.projectUri : null as any;
+        data["tooltip"] = this.tooltip !== undefined ? this.tooltip : null as any;
+        return data;
+    }
+}
+
+export interface IAddExternalProjectRequest {
+    projectName?: string | null;
+    projectUri?: string | null;
+    tooltip?: string | null;
+}
+
 export class ApplicationSettings implements IApplicationSettings {
     key?: string;
     editingToken?: string | null;
@@ -786,6 +953,58 @@ export class EditApplicationSettingsRequest implements IEditApplicationSettingsR
 
 export interface IEditApplicationSettingsRequest {
     directoryConfigurations?: DirectoryConfiguration[] | null;
+}
+
+export class ExternalProject implements IExternalProject {
+    key?: string;
+    editingToken?: string | null;
+    projectName?: string | null;
+    projectUri?: string | null;
+    tooltip?: string | null;
+
+    constructor(data?: IExternalProject) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.key = _data["key"] !== undefined ? _data["key"] : null as any;
+            this.editingToken = _data["editingToken"] !== undefined ? _data["editingToken"] : null as any;
+            this.projectName = _data["projectName"] !== undefined ? _data["projectName"] : null as any;
+            this.projectUri = _data["projectUri"] !== undefined ? _data["projectUri"] : null as any;
+            this.tooltip = _data["tooltip"] !== undefined ? _data["tooltip"] : null as any;
+        }
+    }
+
+    static fromJS(data: any): ExternalProject {
+        data = typeof data === 'object' ? data : {};
+        let result = new ExternalProject();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["key"] = this.key !== undefined ? this.key : null as any;
+        data["editingToken"] = this.editingToken !== undefined ? this.editingToken : null as any;
+        data["projectName"] = this.projectName !== undefined ? this.projectName : null as any;
+        data["projectUri"] = this.projectUri !== undefined ? this.projectUri : null as any;
+        data["tooltip"] = this.tooltip !== undefined ? this.tooltip : null as any;
+        return data;
+    }
+}
+
+export interface IExternalProject {
+    key?: string;
+    editingToken?: string | null;
+    projectName?: string | null;
+    projectUri?: string | null;
+    tooltip?: string | null;
 }
 
 export class HashedString implements IHashedString {

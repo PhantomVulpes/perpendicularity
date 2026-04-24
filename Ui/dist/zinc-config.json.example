@@ -1,7 +1,0 @@
-{
-  "apiUrl": "http://shadesmar:60000",
-  "serviceAccount": {
-    "username": "your-zinc-username",
-    "password": "your-zinc-password"
-  }
-}

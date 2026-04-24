@@ -34,6 +34,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/ApproveUsersPage.vue')
   },
   {
+    path: '/admin/external-projects',
+    name: 'ExternalProjects',
+    component: () => import('../views/ExternalProjectsPage.vue')
+  },
+  {
     path: '/roadmap',
     name: 'Roadmap',
     component: () => import('../views/RoadmapPage.vue')

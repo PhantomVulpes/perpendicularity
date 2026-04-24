@@ -1,8 +1,0 @@
-{
-  "apiUrl": "http://shadesmar:60000",
-  "assistanceProject": "PERPTEST",
-  "serviceAccount": {
-    "username": "PerpendicularityService",
-    "password": "shadesmar"
-  }
-}

@@ -42,6 +42,12 @@
                   </a>
                   <span class="text-gray-600 dark:text-gray-400"> - Review and approve user registrations</span>
                 </li>
+                <li>
+                  <a @click="router.push('/admin/external-projects')" class="text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
+                    External Projects
+                  </a>
+                  <span class="text-gray-600 dark:text-gray-400"> - Manage external project links</span>
+                </li>
               </ul>
             </div>
           </template>
