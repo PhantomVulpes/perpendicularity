@@ -23,7 +23,7 @@ public class EditUserCommandHandler : CommandHandler<EditUserCommand>
         var userToEdit = await userRepository.GetAsync(command.UserToEditKey);
 
         var newStatus = command.Status ?? userToEdit.Status;
-        if (userToEdit.Status == UserStatus.Rejected && command.Status != null)
+        if (userToEdit.Status == UserStatus.Rejected && command.Status == null)
         {
             // If a user was rejected and edited their profile, switch back to unapproved for an admin to review again.
             newStatus = UserStatus.Unapproved;

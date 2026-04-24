@@ -84,16 +84,28 @@
                   </Column>
                   <Column header="Actions">
                     <template #body="slotProps">
-                      <Button
-                        v-if="slotProps.data.status === UserStatus.Unapproved"
-                        label="Approve"
-                        icon="pi pi-check"
-                        @click="handleApproveUser(slotProps.data)"
-                        :loading="approvingUserId === slotProps.data.key"
-                        size="small"
-                        severity="success"
-                        outlined
-                      />
+                      <div v-if="slotProps.data.status === UserStatus.Unapproved" class="flex gap-2">
+                        <Button
+                          icon="pi pi-check"
+                          v-tooltip.top="'Approve user'"
+                          @click="handleApproveUser(slotProps.data)"
+                          :loading="approvingUserId === slotProps.data.key"
+                          :disabled="rejectingUserId === slotProps.data.key"
+                          size="small"
+                          severity="success"
+                          outlined
+                        />
+                        <Button
+                          icon="pi pi-times"
+                          v-tooltip.top="'Reject user'"
+                          @click="handleRejectUser(slotProps.data)"
+                          :loading="rejectingUserId === slotProps.data.key"
+                          :disabled="approvingUserId === slotProps.data.key"
+                          size="small"
+                          severity="danger"
+                          outlined
+                        />
+                      </div>
                       <span v-else class="text-gray-500 dark:text-gray-400">-</span>
                     </template>
                   </Column>
@@ -151,6 +163,7 @@ import { useAuth } from '@/services/auth'
 import { UserStatus, RegisteredUser } from '@/api/apiclients/Perpendicularity/PerpendicularityApiClient'
 import { getAllUsers } from '@/api/User/GetAllUsersQuery'
 import { approveUser } from '@/api/Admin/ApproveUserCommand'
+import { rejectUser } from '@/api/Admin/RejectUserCommand'
 
 const router = useRouter()
 const toast = useToast()
@@ -167,6 +180,7 @@ const users = ref<RegisteredUser[]>([])
 const successMessage = ref('')
 const errorMessage = ref('')
 const approvingUserId = ref<string | null>(null)
+const rejectingUserId = ref<string | null>(null)
 
 // Load users on mount
 onMounted(() => {
@@ -209,6 +223,28 @@ const handleApproveUser = async (userToApprove: RegisteredUser) => {
     errorMessage.value = error.message || `Failed to approve ${userToApprove.displayName}. Please try again.`
   } finally {
     approvingUserId.value = null
+  }
+}
+
+// Reject a user
+const handleRejectUser = async (userToReject: RegisteredUser) => {
+  if (!userToReject.key) return
+  
+  rejectingUserId.value = userToReject.key
+  successMessage.value = ''
+  errorMessage.value = ''
+  
+  try {
+    await rejectUser(userToReject.key)
+    successMessage.value = `Successfully rejected ${userToReject.displayName}.`
+    
+    // Reload users to reflect the change
+    await loadUsers()
+  } catch (error: any) {
+    console.error('Failed to reject user:', error)
+    errorMessage.value = error.message || `Failed to reject ${userToReject.displayName}. Please try again.`
+  } finally {
+    rejectingUserId.value = null
   }
 }
 
