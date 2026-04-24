@@ -2,12 +2,12 @@
   <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
     <div class="container mx-auto px-4 py-12">
       <div class="max-w-6xl mx-auto">
-        <!-- Approve Users Card -->
+        <!-- Users Card -->
         <Card class="mb-6">
           <template #title>
             <div class="flex items-center gap-2 text-2xl">
               <i class="pi pi-users text-primary"></i>
-              Approve Users
+              Users
             </div>
           </template>
           

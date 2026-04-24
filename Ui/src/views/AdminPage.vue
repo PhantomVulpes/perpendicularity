@@ -37,8 +37,8 @@
                   <span class="text-gray-600 dark:text-gray-400"> - Initialize and manage global application settings</span>
                 </li>
                 <li>
-                  <a @click="router.push('/admin/approve-users')" class="text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
-                    Approve Users
+                  <a @click="router.push('/admin/users')" class="text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
+                    View Users
                   </a>
                   <span class="text-gray-600 dark:text-gray-400"> - Review and approve user registrations</span>
                 </li>
