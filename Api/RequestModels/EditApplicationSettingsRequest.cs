@@ -3,7 +3,9 @@ using Vulpes.Perpendicularity.Core.Models;
 
 namespace Vulpes.Perpendicularity.Api.RequestModels;
 
-public record EditApplicationSettingsRequest(IEnumerable<DirectoryConfiguration> DirectoryConfigurations)
+public record EditApplicationSettingsRequest(
+    IEnumerable<DirectoryConfiguration> DirectoryConfigurations,
+    IEnumerable<DirectoryConfiguration> UploadConfigurations)
 {
-    public EditApplicationSettingsCommand ToCommand(RegisteredUser user) => new(DirectoryConfigurations, user.Key);
+    public EditApplicationSettingsCommand ToCommand(RegisteredUser user) => new(DirectoryConfigurations, UploadConfigurations, user.Key);
 }

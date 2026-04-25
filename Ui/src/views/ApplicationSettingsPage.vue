@@ -10,17 +10,51 @@
                 <i class="pi pi-cog text-primary"></i>
                 Application Settings
               </div>
-              <Button
-                v-if="isAdmin"
-                label="Initialize"
-                icon="pi pi-bolt"
-                @click="handleInitializeSettings"
-                :loading="initLoading"
-                severity="secondary"
-                size="small"
-                outlined
-                class="text-sm"
-              />
+              <div v-if="isAdmin" class="flex gap-2">
+                <Button
+                  v-if="!currentSettings"
+                  label="Initialize"
+                  icon="pi pi-bolt"
+                  @click="handleInitializeSettings"
+                  :loading="initLoading"
+                  severity="secondary"
+                  size="small"
+                  outlined
+                  class="text-sm"
+                />
+                <template v-else>
+                  <Button
+                    v-if="!isEditMode"
+                    label="Edit"
+                    icon="pi pi-pencil"
+                    @click="enterEditMode"
+                    severity="primary"
+                    size="small"
+                    outlined
+                    class="text-sm"
+                  />
+                  <template v-else>
+                    <Button
+                      label="Cancel"
+                      icon="pi pi-times"
+                      @click="cancelEdit"
+                      severity="secondary"
+                      size="small"
+                      outlined
+                      class="text-sm"
+                    />
+                    <Button
+                      label="Save"
+                      icon="pi pi-save"
+                      @click="handleSaveSettings"
+                      :loading="saveLoading"
+                      severity="success"
+                      size="small"
+                      class="text-sm"
+                    />
+                  </template>
+                </template>
+              </div>
             </div>
           </template>
           
@@ -82,38 +116,12 @@
                   </div>
                 </div>
 
-                <!-- Directory Configurations Section -->
+                <!-- Download Paths Section -->
                 <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                  <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xl font-semibold flex items-center gap-2">
-                      <i class="pi pi-folder-open"></i>
-                      Download Paths
-                    </h3>
-                    <Button
-                      v-if="!isEditMode"
-                      label="Edit"
-                      icon="pi pi-pencil"
-                      @click="enterEditMode"
-                      severity="primary"
-                      outlined
-                    />
-                    <div v-else class="flex gap-2">
-                      <Button
-                        label="Cancel"
-                        icon="pi pi-times"
-                        @click="cancelEdit"
-                        severity="secondary"
-                        outlined
-                      />
-                      <Button
-                        label="Save"
-                        icon="pi pi-save"
-                        @click="handleSaveSettings"
-                        :loading="saveLoading"
-                        severity="success"
-                      />
-                    </div>
-                  </div>
+                  <h3 class="text-xl font-semibold flex items-center gap-2 mb-4">
+                    <i class="pi pi-folder-open"></i>
+                    Download Paths
+                  </h3>
 
                   <!-- Read-only View -->
                   <div v-if="!isEditMode">
@@ -206,6 +214,105 @@
                     />
                   </div>
                 </div>
+
+                <!-- Upload Paths Section -->
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 mt-6">
+                  <h3 class="text-xl font-semibold flex items-center gap-2 mb-4">
+                    <i class="pi pi-upload"></i>
+                    Upload Paths
+                  </h3>
+
+                  <!-- Read-only View -->
+                  <div v-if="!isEditMode">
+                    <div v-if="currentSettings.uploadPaths && currentSettings.uploadPaths.length > 0" class="space-y-3">
+                      <div 
+                        v-for="(config, index) in currentSettings.uploadPaths" 
+                        :key="index"
+                        class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                      >
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                              Path
+                            </label>
+                            <p class="font-mono text-sm">{{ config.path }}</p>
+                          </div>
+                          <div>
+                            <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                              Alias
+                            </label>
+                            <p class="text-sm">{{ config.alias }}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div v-else class="text-center py-8 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                      <i class="pi pi-inbox text-4xl mb-2"></i>
+                      <p>No upload paths configured.</p>
+                    </div>
+                  </div>
+
+                  <!-- Edit Mode -->
+                  <div v-else>
+                    <div class="space-y-4 mb-4">
+                      <div 
+                        v-for="(config, index) in editableUploadConfigurations" 
+                        :key="index" 
+                        class="flex flex-col sm:flex-row gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                      >
+                        <div class="flex-1">
+                          <label :for="`edit-upload-path-${index}`" class="block text-sm font-medium mb-1">
+                            Path
+                          </label>
+                          <InputText
+                            :id="`edit-upload-path-${index}`"
+                            v-model="config.path"
+                            placeholder="/path/to/upload/directory"
+                            class="w-full"
+                          />
+                        </div>
+                        <div class="flex-1">
+                          <label :for="`edit-upload-alias-${index}`" class="block text-sm font-medium mb-1">
+                            Alias
+                          </label>
+                          <InputText
+                            :id="`edit-upload-alias-${index}`"
+                            v-model="config.alias"
+                            placeholder="My Uploads"
+                            class="w-full"
+                          />
+                        </div>
+                        <div class="flex items-end">
+                          <Button
+                            icon="pi pi-trash"
+                            @click="removeUploadConfig(index)"
+                            severity="danger"
+                            outlined
+                            class="w-full sm:w-auto"
+                          />
+                        </div>
+                      </div>
+
+                      <!-- Empty State in Edit Mode -->
+                      <div 
+                        v-if="editableUploadConfigurations.length === 0"
+                        class="text-center py-8 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                      >
+                        <i class="pi pi-inbox text-4xl mb-2"></i>
+                        <p>No upload configurations. Click "Add Upload Path" to get started.</p>
+                      </div>
+                    </div>
+
+                    <!-- Add Upload Path Button -->
+                    <Button
+                      label="Add Upload Path"
+                      icon="pi pi-plus"
+                      @click="addUploadConfig"
+                      severity="secondary"
+                      outlined
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </template>
@@ -259,6 +366,7 @@ const isEditMode = ref(false)
 // Settings data
 const currentSettings = ref<ApplicationSettings | null>(null)
 const editableConfigurations = ref<Array<{ path: string; alias: string }>>([])
+const editableUploadConfigurations = ref<Array<{ path: string; alias: string }>>([])
 
 // Load settings on mount
 onMounted(async () => {
@@ -303,11 +411,21 @@ const enterEditMode = () => {
   } else {
     editableConfigurations.value = []
   }
+  // Create a copy of current upload paths for editing
+  if (currentSettings.value?.uploadPaths) {
+    editableUploadConfigurations.value = currentSettings.value.uploadPaths.map(config => ({
+      path: config.path || '',
+      alias: config.alias || ''
+    }))
+  } else {
+    editableUploadConfigurations.value = []
+  }
 }
 
 const cancelEdit = () => {
   isEditMode.value = false
   editableConfigurations.value = []
+  editableUploadConfigurations.value = []
   successMessage.value = ''
   errorMessage.value = ''
 }
@@ -318,6 +436,14 @@ const addDirectoryConfig = () => {
 
 const removeDirectoryConfig = (index: number) => {
   editableConfigurations.value.splice(index, 1)
+}
+
+const addUploadConfig = () => {
+  editableUploadConfigurations.value.push({ path: '', alias: '' })
+}
+
+const removeUploadConfig = (index: number) => {
+  editableUploadConfigurations.value.splice(index, 1)
 }
 
 const handleInitializeSettings = async () => {
@@ -351,25 +477,34 @@ const handleSaveSettings = async () => {
 
   try {
     // Validate configurations
-    const hasEmptyFields = editableConfigurations.value.some(
+    const hasEmptyDownloadFields = editableConfigurations.value.some(
+      config => !config.path.trim() || !config.alias.trim()
+    )
+    const hasEmptyUploadFields = editableUploadConfigurations.value.some(
       config => !config.path.trim() || !config.alias.trim()
     )
     
-    if (hasEmptyFields) {
+    if (hasEmptyDownloadFields || hasEmptyUploadFields) {
       errorMessage.value = 'All directory configurations must have both path and alias filled in.'
       saveLoading.value = false
       return
     }
 
     // Convert to DirectoryConfiguration objects
-    const configs = editableConfigurations.value.map(
+    const downloadConfigs = editableConfigurations.value.map(
+      config => new DirectoryConfiguration({ 
+        path: config.path.trim(), 
+        alias: config.alias.trim() 
+      })
+    )
+    const uploadConfigs = editableUploadConfigurations.value.map(
       config => new DirectoryConfiguration({ 
         path: config.path.trim(), 
         alias: config.alias.trim() 
       })
     )
 
-    await editApplicationSettings(configs)
+    await editApplicationSettings(downloadConfigs, uploadConfigs)
     successMessage.value = 'Application settings saved successfully!'
     
     // Exit edit mode and reload settings

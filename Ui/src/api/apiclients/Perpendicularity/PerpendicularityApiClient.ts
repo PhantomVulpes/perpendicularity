@@ -784,6 +784,7 @@ export class ApplicationSettings implements IApplicationSettings {
     key?: string;
     editingToken?: string | null;
     downloadPaths?: DirectoryConfiguration[] | null;
+    uploadPaths?: DirectoryConfiguration[] | null;
 
     constructor(data?: IApplicationSettings) {
         if (data) {
@@ -806,6 +807,14 @@ export class ApplicationSettings implements IApplicationSettings {
             else {
                 this.downloadPaths = null as any;
             }
+            if (Array.isArray(_data["uploadPaths"])) {
+                this.uploadPaths = [] as any;
+                for (let item of _data["uploadPaths"])
+                    this.uploadPaths!.push(DirectoryConfiguration.fromJS(item));
+            }
+            else {
+                this.uploadPaths = null as any;
+            }
         }
     }
 
@@ -825,6 +834,11 @@ export class ApplicationSettings implements IApplicationSettings {
             for (let item of this.downloadPaths)
                 data["downloadPaths"].push(item ? item.toJSON() : null as any);
         }
+        if (Array.isArray(this.uploadPaths)) {
+            data["uploadPaths"] = [];
+            for (let item of this.uploadPaths)
+                data["uploadPaths"].push(item ? item.toJSON() : null as any);
+        }
         return data;
     }
 }
@@ -833,6 +847,7 @@ export interface IApplicationSettings {
     key?: string;
     editingToken?: string | null;
     downloadPaths?: DirectoryConfiguration[] | null;
+    uploadPaths?: DirectoryConfiguration[] | null;
 }
 
 export class ApproveUserRequest implements IApproveUserRequest {
@@ -1070,6 +1085,7 @@ export interface IDownloadMetric {
 
 export class EditApplicationSettingsRequest implements IEditApplicationSettingsRequest {
     directoryConfigurations?: DirectoryConfiguration[] | null;
+    uploadConfigurations?: DirectoryConfiguration[] | null;
 
     constructor(data?: IEditApplicationSettingsRequest) {
         if (data) {
@@ -1090,6 +1106,14 @@ export class EditApplicationSettingsRequest implements IEditApplicationSettingsR
             else {
                 this.directoryConfigurations = null as any;
             }
+            if (Array.isArray(_data["uploadConfigurations"])) {
+                this.uploadConfigurations = [] as any;
+                for (let item of _data["uploadConfigurations"])
+                    this.uploadConfigurations!.push(DirectoryConfiguration.fromJS(item));
+            }
+            else {
+                this.uploadConfigurations = null as any;
+            }
         }
     }
 
@@ -1107,12 +1131,18 @@ export class EditApplicationSettingsRequest implements IEditApplicationSettingsR
             for (let item of this.directoryConfigurations)
                 data["directoryConfigurations"].push(item ? item.toJSON() : null as any);
         }
+        if (Array.isArray(this.uploadConfigurations)) {
+            data["uploadConfigurations"] = [];
+            for (let item of this.uploadConfigurations)
+                data["uploadConfigurations"].push(item ? item.toJSON() : null as any);
+        }
         return data;
     }
 }
 
 export interface IEditApplicationSettingsRequest {
     directoryConfigurations?: DirectoryConfiguration[] | null;
+    uploadConfigurations?: DirectoryConfiguration[] | null;
 }
 
 export class EditUserRequest implements IEditUserRequest {

@@ -19,6 +19,11 @@ public record ApplicationSettings : AggregateRoot
     /// </summary>
     public IEnumerable<DirectoryConfiguration> DownloadPaths { get; init; } = [];
 
+    /// <summary>
+    /// The paths that approved users are able to upload files to.
+    /// </summary>
+    public IEnumerable<DirectoryConfiguration> UploadPaths { get; init; } = [];
+
     public AggregateRootValidationModel<ApplicationSettings> Validate()
     {
         var validationBuilder = new ValidationBuilder()

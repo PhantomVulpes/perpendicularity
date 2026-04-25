@@ -150,7 +150,7 @@ const upcomingFeatures = ref<RoadmapFeature[]>([
   {
     id: 6,
     title: 'File Upload',
-    description: 'Allow approved users to upload content directly',
+    description: 'Allow approved users to upload content directly0;',
     completed: false
   },
   {

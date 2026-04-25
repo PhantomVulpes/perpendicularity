@@ -5,7 +5,10 @@ using Vulpes.Perpendicularity.Core.Models;
 
 namespace Vulpes.Perpendicularity.Core.Commands;
 
-public record EditApplicationSettingsCommand(IEnumerable<DirectoryConfiguration> DirectoryConfigurations, Guid UserKey) : Command;
+public record EditApplicationSettingsCommand(
+    IEnumerable<DirectoryConfiguration> DirectoryConfigurations,
+    IEnumerable<DirectoryConfiguration> UploadConfigurations,
+    Guid UserKey) : Command;
 public class EditApplicationSettingsCommandHandler : CommandHandler<EditApplicationSettingsCommand>
 {
     private readonly IModelRepository<RegisteredUser> userRepository;
@@ -21,7 +24,8 @@ public class EditApplicationSettingsCommandHandler : CommandHandler<EditApplicat
     {
         var newApplicationSettings = ApplicationSettings.Default with
         {
-            DownloadPaths = command.DirectoryConfigurations
+            DownloadPaths = command.DirectoryConfigurations,
+            UploadPaths = command.UploadConfigurations
         };
 
         await appSettingsRepository.SaveAsync(newApplicationSettings.PrepareForSave());
