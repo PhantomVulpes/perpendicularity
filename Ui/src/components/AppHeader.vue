@@ -54,17 +54,6 @@
         
         <!-- Right: Auth Actions or User Info -->
         <div v-if="isAuthenticated" class="flex items-center gap-3">
-          <!-- Request Assistance Button (shown for all authenticated users) -->
-          <Button
-            label="Request Assistance"
-            icon="pi pi-question-circle"
-            @click="showAssistanceModal = true"
-            severity="help"
-            outlined
-            size="small"
-            aria-label="Request Assistance"
-            class="pr-4"
-          />
 
           <!-- Admin Button (only shown for administrators) -->
           <Button
@@ -76,6 +65,18 @@
             outlined
             size="small"
             aria-label="Admin Dashboard"
+            class="pr-4"
+          />
+
+          <!-- Request Assistance Button (shown for all authenticated users) -->
+          <Button
+            label="Request Assistance"
+            icon="pi pi-question-circle"
+            @click="showAssistanceModal = true"
+            severity="help"
+            outlined
+            size="small"
+            aria-label="Request Assistance"
             class="pr-4"
           />
 
