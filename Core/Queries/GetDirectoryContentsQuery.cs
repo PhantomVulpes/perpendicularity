@@ -47,7 +47,7 @@ public class GetDirectoryContentsQueryHandler : QueryHandler<GetDirectoryContent
     protected async override Task<AccessResult> InternalValidateAccessAsync(GetDirectoryContentsQuery query)
     {
         var user = await userRepository.GetAsync(query.AuthenticatedUserKey);
-        if (user.Status == UserStatus.Admin || user.Status == UserStatus.Approved)
+        if (user.Status != UserStatus.Admin || user.Status != UserStatus.Approved)
         {
             return AccessResult.Fail($"{nameof(RegisteredUser)} {user.ToLogName()} does not have access to view directory contents.");
         }

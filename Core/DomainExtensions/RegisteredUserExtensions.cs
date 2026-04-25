@@ -15,8 +15,6 @@ public static class RegisteredUserExtensions
         };
     }
 
-    public static RegisteredUser WithDownloadMetric(this RegisteredUser registeredUser, DownloadMetric downloadMetric) => registeredUser.WithDownloadMetric([downloadMetric]);
-
     public static RegisteredUser WithUploadMetric(this RegisteredUser registeredUser, IEnumerable<UploadMetric> uploadMetrics)
     {
         var uploadMetricsList = registeredUser.UploadMetrics.ToList();
@@ -27,6 +25,4 @@ public static class RegisteredUserExtensions
             UploadMetrics = uploadMetricsList
         };
     }
-
-    public static RegisteredUser WithUploadMetric(this RegisteredUser registeredUser, UploadMetric uploadMetric) => registeredUser.WithUploadMetric([uploadMetric]);
 }
