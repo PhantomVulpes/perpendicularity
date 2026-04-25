@@ -21,6 +21,7 @@ public static class MediationRegistration
         .AddTransient<CommandHandler<AddExternalProjectCommand>, AddExternalProjectCommandHandler>()
         .AddTransient<CommandHandler<DeleteExternalProjectCommand>, DeleteExternalProjectCommandHandler>()
         .AddTransient<CommandHandler<EditUserCommand>, EditUserCommandHandler>()
+        .AddTransient<CommandHandler<AddUserDownloadCommand>, AddUserDownloadCommandHandler>()
         ;
 
     public static IServiceCollection InjectQueries(this IServiceCollection services) => services
@@ -51,6 +52,7 @@ public static class MediationRegistration
                 .Register(provider.GetRequiredService<CommandHandler<AddExternalProjectCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<DeleteExternalProjectCommand>>())
                 .Register(provider.GetRequiredService<CommandHandler<EditUserCommand>>())
+                .Register(provider.GetRequiredService<CommandHandler<AddUserDownloadCommand>>())
                 ;
 
             _ = mediator

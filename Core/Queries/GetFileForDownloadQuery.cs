@@ -30,7 +30,8 @@ public class GetFileForDownloadQueryHandler : QueryHandler<GetFileForDownloadQue
             throw new FileNotFoundException($"File not found: {query.RelativeFilePath}");
         }
 
-        return new FileForDownload(normalizedFullPath, Path.GetFileName(normalizedFullPath)).FromResult();
+        var fileInfo = new FileInfo(normalizedFullPath);
+        return new FileForDownload(normalizedFullPath, Path.GetFileName(normalizedFullPath), fileInfo.Length).FromResult();
     }
 
     protected async override Task<AccessResult> InternalValidateAccessAsync(GetFileForDownloadQuery query)

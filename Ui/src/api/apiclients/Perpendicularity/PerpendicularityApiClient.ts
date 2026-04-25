@@ -1024,6 +1024,50 @@ export interface IDownloadFilesAsZipRequest {
     filePaths?: string[] | null;
 }
 
+export class DownloadMetric implements IDownloadMetric {
+    path?: string | null;
+    sizeBytes?: number;
+    downloadDate?: Date;
+
+    constructor(data?: IDownloadMetric) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.path = _data["path"] !== undefined ? _data["path"] : null as any;
+            this.sizeBytes = _data["sizeBytes"] !== undefined ? _data["sizeBytes"] : null as any;
+            this.downloadDate = _data["downloadDate"] ? new Date(_data["downloadDate"].toString()) : null as any;
+        }
+    }
+
+    static fromJS(data: any): DownloadMetric {
+        data = typeof data === 'object' ? data : {};
+        let result = new DownloadMetric();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["path"] = this.path !== undefined ? this.path : null as any;
+        data["sizeBytes"] = this.sizeBytes !== undefined ? this.sizeBytes : null as any;
+        data["downloadDate"] = this.downloadDate ? this.downloadDate.toISOString() : null as any;
+        return data;
+    }
+}
+
+export interface IDownloadMetric {
+    path?: string | null;
+    sizeBytes?: number;
+    downloadDate?: Date;
+}
+
 export class EditApplicationSettingsRequest implements IEditApplicationSettingsRequest {
     directoryConfigurations?: DirectoryConfiguration[] | null;
 
@@ -1365,6 +1409,7 @@ export class RegisteredUser implements IRegisteredUser {
     status?: UserStatus;
     creationDate?: Date;
     lastLoginDate?: Date;
+    downloadMetrics?: DownloadMetric[] | null;
 
     constructor(data?: IRegisteredUser) {
         if (data) {
@@ -1386,6 +1431,14 @@ export class RegisteredUser implements IRegisteredUser {
             this.status = _data["status"] !== undefined ? _data["status"] : null as any;
             this.creationDate = _data["creationDate"] ? new Date(_data["creationDate"].toString()) : null as any;
             this.lastLoginDate = _data["lastLoginDate"] ? new Date(_data["lastLoginDate"].toString()) : null as any;
+            if (Array.isArray(_data["downloadMetrics"])) {
+                this.downloadMetrics = [] as any;
+                for (let item of _data["downloadMetrics"])
+                    this.downloadMetrics!.push(DownloadMetric.fromJS(item));
+            }
+            else {
+                this.downloadMetrics = null as any;
+            }
         }
     }
 
@@ -1407,6 +1460,11 @@ export class RegisteredUser implements IRegisteredUser {
         data["status"] = this.status !== undefined ? this.status : null as any;
         data["creationDate"] = this.creationDate ? this.creationDate.toISOString() : null as any;
         data["lastLoginDate"] = this.lastLoginDate ? this.lastLoginDate.toISOString() : null as any;
+        if (Array.isArray(this.downloadMetrics)) {
+            data["downloadMetrics"] = [];
+            for (let item of this.downloadMetrics)
+                data["downloadMetrics"].push(item ? item.toJSON() : null as any);
+        }
         return data;
     }
 }
@@ -1421,6 +1479,7 @@ export interface IRegisteredUser {
     status?: UserStatus;
     creationDate?: Date;
     lastLoginDate?: Date;
+    downloadMetrics?: DownloadMetric[] | null;
 }
 
 export class RejectUserRequest implements IRejectUserRequest {

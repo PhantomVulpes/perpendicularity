@@ -3,6 +3,7 @@ using Vulpes.Electrum.Domain.Mediation;
 using Vulpes.Perpendicularity.Api.RequestModels;
 using Vulpes.Perpendicularity.Api.ResponseModels;
 using Vulpes.Perpendicularity.Api.Services;
+using Vulpes.Perpendicularity.Core.Commands;
 using Vulpes.Perpendicularity.Core.Models;
 using Vulpes.Perpendicularity.Core.QueriedModels;
 using Vulpes.Perpendicularity.Core.Queries;
@@ -52,6 +53,8 @@ public class FileController : PerpendicularityController
         var query = new GetFileForDownloadQuery(RegisteredUser.Key, desiredRoot, decodedPath);
         var fileInfo = await mediator.RequestResponseAsync(query);
 
+        await mediator.ExecuteCommandAsync(new AddUserDownloadCommand(RegisteredUser.Key, [DownloadMetric.Default with { Path = Path.Combine(desiredRoot.Path, decodedPath), SizeBytes = fileInfo.FileSize }]));
+
         var fileStream = System.IO.File.OpenRead(fileInfo.FullPath);
         return File(fileStream, "application/octet-stream", fileInfo.FileName);
     }
@@ -69,6 +72,17 @@ public class FileController : PerpendicularityController
 
         var query = new GetFilesAsZipQuery(RegisteredUser.Key, desiredRoot, request.FilePaths);
         var zipInfo = await mediator.RequestResponseAsync(query);
+
+        // Record each file for download in the user's metrics.
+        var downloadMetrics = request.FilePaths.Select(relativePath =>
+        {
+            var fullPath = Path.Combine(desiredRoot.Path, relativePath);
+            var fileInfo = new FileInfo(fullPath);
+            return DownloadMetric.Default with { Path = fullPath, SizeBytes = fileInfo.Length };
+        });
+
+        await mediator.ExecuteCommandAsync(new AddUserDownloadCommand(RegisteredUser.Key, downloadMetrics));
+
         // Use TempFileStream to automatically delete the temp file after the response is sent
         var fileStream = new TempFileStream(zipInfo.TempFilePath, FileMode.Open, FileAccess.Read, FileShare.None);
 

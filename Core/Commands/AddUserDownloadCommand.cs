@@ -1,0 +1,28 @@
+using Vulpes.Electrum.Domain.Commanding;
+using Vulpes.Electrum.Domain.Data;
+using Vulpes.Electrum.Domain.Extensions;
+using Vulpes.Electrum.Domain.Security;
+using Vulpes.Perpendicularity.Core.DomainExtensions;
+using Vulpes.Perpendicularity.Core.Models;
+
+namespace Vulpes.Perpendicularity.Core.Commands;
+
+public record AddUserDownloadCommand(Guid UserKey, IEnumerable<DownloadMetric> DownloadMetrics) : Command;
+public class AddUserDownloadCommandHandler : CommandHandler<AddUserDownloadCommand>
+{
+    private readonly IModelRepository<RegisteredUser> userRepository;
+
+    public AddUserDownloadCommandHandler(IModelRepository<RegisteredUser> userRepository)
+    {
+        this.userRepository = userRepository;
+    }
+
+    protected override async Task InternalExecuteAsync(AddUserDownloadCommand command)
+    {
+        var updatedUser = (await userRepository.GetAsync(command.UserKey)).WithDownloadMetric(command.DownloadMetrics);
+
+        await userRepository.SaveAsync(updatedUser.PrepareForSave());
+    }
+
+    protected override Task<AccessResult> InternalValidateAccessAsync(AddUserDownloadCommand command) => AccessResult.Success().FromResult();
+}

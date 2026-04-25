@@ -29,6 +29,8 @@ public record RegisteredUser : AggregateRoot
     public DateTimeOffset CreationDate { get; init; } = DateTimeOffset.MinValue;
     public DateTimeOffset LastLoginDate { get; init; } = DateTimeOffset.MinValue;
 
+    public IEnumerable<DownloadMetric> DownloadMetrics { get; init; } = [];
+
     public override string ToLogName() => $"{LastName} {FirstName} ({Key})";
 
     public AggregateRootValidationModel<RegisteredUser> Validate()
@@ -69,4 +71,17 @@ public enum UserStatus
     Approved,
     Rejected,
     Admin
+}
+
+public record DownloadMetric
+{
+    public static DownloadMetric Empty { get; } = new();
+    public static DownloadMetric Default => Empty with
+    {
+        DownloadDate = DateTime.UtcNow
+    };
+
+    public string Path { get; init; } = string.Empty;
+    public long SizeBytes { get; init; } = int.MinValue;
+    public DateTime DownloadDate { get; init; } = DateTime.MinValue;
 }
