@@ -131,26 +131,26 @@ const completedFeatures = ref<RoadmapFeature[]>([
     description: 'Allow approved users to browse folders and files in the server',
     completed: true
   },
-])
-
-// Upcoming features
-const upcomingFeatures = ref<RoadmapFeature[]>([
   {
     id: 5,
     title: 'File Download',
     description: 'Allow approved users to download content directly',
-    completed: false
-  },
-  {
-    id: 6,
-    title: 'File Upload',
-    description: 'Allow approved users to upload content directly',
-    completed: false
+    completed: true
   },
   {
     id: 7,
     title: 'Zinc Backend',
     description: 'Scheduled break to work on the ticketing system for projects. It needs some love, as it will be used as the ticketing system for this project as well.',
+    completed: true
+  },
+])
+
+// Upcoming features
+const upcomingFeatures = ref<RoadmapFeature[]>([
+  {
+    id: 6,
+    title: 'File Upload',
+    description: 'Allow approved users to upload content directly',
     completed: false
   },
   {
