@@ -138,6 +138,12 @@ const completedFeatures = ref<RoadmapFeature[]>([
     completed: true
   },
   {
+    id: 6,
+    title: 'File Upload',
+    description: 'Allow approved users to upload content directly0;',
+    completed: true
+  },
+  {
     id: 7,
     title: 'Zinc Backend',
     description: 'Scheduled break to work on the ticketing system for projects. It needs some love, as it will be used as the ticketing system for this project as well.',
@@ -147,12 +153,6 @@ const completedFeatures = ref<RoadmapFeature[]>([
 
 // Upcoming features
 const upcomingFeatures = ref<RoadmapFeature[]>([
-  {
-    id: 6,
-    title: 'File Upload',
-    description: 'Allow approved users to upload content directly0;',
-    completed: false
-  },
   {
     id: 8,
     title: 'Personal File Storage',
