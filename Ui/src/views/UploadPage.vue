@@ -27,8 +27,7 @@
               <div class="flex items-start gap-2">
                 <i class="pi pi-info-circle mt-1"></i>
                 <div>
-                  <p class="font-semibold mb-1">Upload Instructions</p>
-                  <p class="text-sm">Select a destination folder and choose a file to upload. For multiple files, please use a .zip archive.</p>
+                  <p class="text-sm">Upload a file to the server to be triaged by an admin. Your upload will not appear immediately as it must be sorted on the server. Select a destination folder and choose a file to upload. For multiple files, please use a .zip file.</p>
                 </div>
               </div>
             </Message>
