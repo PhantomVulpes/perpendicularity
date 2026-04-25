@@ -68,7 +68,7 @@ const error = ref<string | null>(null)
 onMounted(async () => {
   try {
     const client = createAuthenticatedClient()
-    aliases.value = await client.rootDirectory()
+    aliases.value = await client.downloadDirectory()
   } catch (e: any) {
     error.value = e.message || 'Failed to load folders'
     console.error('Error loading aliases:', e)

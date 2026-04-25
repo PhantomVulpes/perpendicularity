@@ -410,8 +410,8 @@ export class Client {
     /**
      * @return OK
      */
-    rootDirectory(): Promise<string[]> {
-        let url_ = this.baseUrl + "/api/file/root-directory";
+    downloadDirectory(): Promise<string[]> {
+        let url_ = this.baseUrl + "/api/file/download-directory";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -422,11 +422,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processRootDirectory(_response);
+            return this.processDownloadDirectory(_response);
         });
     }
 
-    protected processRootDirectory(response: Response): Promise<string[]> {
+    protected processDownloadDirectory(response: Response): Promise<string[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -514,6 +514,141 @@ export class Client {
     }
 
     protected processDownloadZip(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    uploadDirectory(): Promise<string[]> {
+        let url_ = this.baseUrl + "/api/file/upload-directory";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUploadDirectory(_response);
+        });
+    }
+
+    protected processUploadDirectory(response: Response): Promise<string[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            else {
+                result200 = null as any;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string[]>(null as any);
+    }
+
+    /**
+     * @param file (optional) 
+     * @return OK
+     */
+    upload(rootDirectory: string, file: FileParameter | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/file/upload/{rootDirectory}";
+        if (rootDirectory === undefined || rootDirectory === null)
+            throw new globalThis.Error("The parameter 'rootDirectory' must be defined.");
+        url_ = url_.replace("{rootDirectory}", encodeURIComponent("" + rootDirectory));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (file === null || file === undefined)
+            throw new globalThis.Error("The parameter 'file' cannot be null.");
+        else
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpload(_response);
+        });
+    }
+
+    protected processUpload(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param file (optional) 
+     * @return OK
+     */
+    upload2(rootDirectory: string, relativePath: string, file: FileParameter | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/file/upload/{rootDirectory}/{relativePath}";
+        if (rootDirectory === undefined || rootDirectory === null)
+            throw new globalThis.Error("The parameter 'rootDirectory' must be defined.");
+        url_ = url_.replace("{rootDirectory}", encodeURIComponent("" + rootDirectory));
+        if (relativePath === undefined || relativePath === null)
+            throw new globalThis.Error("The parameter 'relativePath' must be defined.");
+        url_ = url_.replace("{relativePath}", encodeURIComponent("" + relativePath));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (file === null || file === undefined)
+            throw new globalThis.Error("The parameter 'file' cannot be null.");
+        else
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUpload2(_response);
+        });
+    }
+
+    protected processUpload2(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -1440,6 +1575,7 @@ export class RegisteredUser implements IRegisteredUser {
     creationDate?: Date;
     lastLoginDate?: Date;
     downloadMetrics?: DownloadMetric[] | null;
+    uploadMetrics?: UploadMetric[] | null;
 
     constructor(data?: IRegisteredUser) {
         if (data) {
@@ -1469,6 +1605,14 @@ export class RegisteredUser implements IRegisteredUser {
             else {
                 this.downloadMetrics = null as any;
             }
+            if (Array.isArray(_data["uploadMetrics"])) {
+                this.uploadMetrics = [] as any;
+                for (let item of _data["uploadMetrics"])
+                    this.uploadMetrics!.push(UploadMetric.fromJS(item));
+            }
+            else {
+                this.uploadMetrics = null as any;
+            }
         }
     }
 
@@ -1495,6 +1639,11 @@ export class RegisteredUser implements IRegisteredUser {
             for (let item of this.downloadMetrics)
                 data["downloadMetrics"].push(item ? item.toJSON() : null as any);
         }
+        if (Array.isArray(this.uploadMetrics)) {
+            data["uploadMetrics"] = [];
+            for (let item of this.uploadMetrics)
+                data["uploadMetrics"].push(item ? item.toJSON() : null as any);
+        }
         return data;
     }
 }
@@ -1510,6 +1659,7 @@ export interface IRegisteredUser {
     creationDate?: Date;
     lastLoginDate?: Date;
     downloadMetrics?: DownloadMetric[] | null;
+    uploadMetrics?: UploadMetric[] | null;
 }
 
 export class RejectUserRequest implements IRejectUserRequest {
@@ -1548,6 +1698,50 @@ export interface IRejectUserRequest {
     requestedUserKey?: string;
 }
 
+export class UploadMetric implements IUploadMetric {
+    path?: string | null;
+    sizeBytes?: number;
+    uploadDate?: Date;
+
+    constructor(data?: IUploadMetric) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.path = _data["path"] !== undefined ? _data["path"] : null as any;
+            this.sizeBytes = _data["sizeBytes"] !== undefined ? _data["sizeBytes"] : null as any;
+            this.uploadDate = _data["uploadDate"] ? new Date(_data["uploadDate"].toString()) : null as any;
+        }
+    }
+
+    static fromJS(data: any): UploadMetric {
+        data = typeof data === 'object' ? data : {};
+        let result = new UploadMetric();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["path"] = this.path !== undefined ? this.path : null as any;
+        data["sizeBytes"] = this.sizeBytes !== undefined ? this.sizeBytes : null as any;
+        data["uploadDate"] = this.uploadDate ? this.uploadDate.toISOString() : null as any;
+        return data;
+    }
+}
+
+export interface IUploadMetric {
+    path?: string | null;
+    sizeBytes?: number;
+    uploadDate?: Date;
+}
+
 export enum UserStatus {
     Unknown = "Unknown",
     Inactive = "Inactive",
@@ -1555,6 +1749,11 @@ export enum UserStatus {
     Approved = "Approved",
     Rejected = "Rejected",
     Admin = "Admin",
+}
+
+export interface FileParameter {
+    data: any;
+    fileName: string;
 }
 
 export class ApiException extends Error {

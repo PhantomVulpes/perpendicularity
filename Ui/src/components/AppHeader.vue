@@ -15,6 +15,13 @@
             Browse
           </RouterLink>
           <RouterLink 
+            to="/upload" 
+            class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-1"
+          >
+            <i class="pi pi-upload text-xs"></i>
+            Upload
+          </RouterLink>
+          <RouterLink 
             to="/roadmap" 
             class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-1"
           >

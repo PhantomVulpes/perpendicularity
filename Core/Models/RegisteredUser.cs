@@ -30,6 +30,7 @@ public record RegisteredUser : AggregateRoot
     public DateTimeOffset LastLoginDate { get; init; } = DateTimeOffset.MinValue;
 
     public IEnumerable<DownloadMetric> DownloadMetrics { get; init; } = [];
+    public IEnumerable<UploadMetric> UploadMetrics { get; init; } = [];
 
     public override string ToLogName() => $"{LastName} {FirstName} ({Key})";
 
@@ -84,4 +85,17 @@ public record DownloadMetric
     public string Path { get; init; } = string.Empty;
     public long SizeBytes { get; init; } = int.MinValue;
     public DateTime DownloadDate { get; init; } = DateTime.MinValue;
+}
+
+public record UploadMetric
+{
+    public static UploadMetric Empty { get; } = new();
+    public static UploadMetric Default => Empty with
+    {
+        UploadDate = DateTime.UtcNow
+    };
+
+    public string Path { get; init; } = string.Empty;
+    public long SizeBytes { get; init; } = int.MinValue;
+    public DateTime UploadDate { get; init; } = DateTime.MinValue;
 }

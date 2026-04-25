@@ -57,6 +57,11 @@ const routes: RouteRecordRaw[] = [
     path: '/browse/:rootDirectory/:pathMatch(.*)*',
     name: 'BrowsePath',
     component: () => import('../views/BrowsePathPage.vue')
+  },
+  {
+    path: '/upload',
+    name: 'Upload',
+    component: () => import('../views/UploadPage.vue')
   }
 ]
 

@@ -25,7 +25,7 @@ public class FileController : PerpendicularityController
     {
         var decodedPath = string.IsNullOrEmpty(remainingPath) ? string.Empty : Uri.UnescapeDataString(remainingPath);
 
-        var desiredRoot = (await mediator.RequestResponseAsync(new GetDirectoryConfigurationsQuery(RegisteredUser.Key)))
+        var desiredRoot = (await mediator.RequestResponseAsync(new GetDownloadDirectoryConfigurationsQuery(RegisteredUser.Key)))
             .Single(config => config.Alias == rootDirectory)
             ;
 
@@ -35,10 +35,10 @@ public class FileController : PerpendicularityController
         return Ok(DirectoryContentsResponse.FromDirectoryContents(contents));
     }
 
-    [HttpGet("root-directory")]
-    public async Task<ActionResult<IEnumerable<string>>> GetAliases()
+    [HttpGet("download-directory")]
+    public async Task<ActionResult<IEnumerable<string>>> GetDownloadAliases()
     {
-        var result = await mediator.RequestResponseAsync(new GetDirectoryConfigurationsQuery(RegisteredUser.Key));
+        var result = await mediator.RequestResponseAsync(new GetDownloadDirectoryConfigurationsQuery(RegisteredUser.Key));
         return Ok(result.Select(config => config.Alias));
     }
 
@@ -47,7 +47,7 @@ public class FileController : PerpendicularityController
     {
         var decodedPath = Uri.UnescapeDataString(filePath);
 
-        var desiredRoot = (await mediator.RequestResponseAsync(new GetDirectoryConfigurationsQuery(RegisteredUser.Key)))
+        var desiredRoot = (await mediator.RequestResponseAsync(new GetDownloadDirectoryConfigurationsQuery(RegisteredUser.Key)))
             .Single(config => config.Alias == rootDirectory);
 
         var query = new GetFileForDownloadQuery(RegisteredUser.Key, desiredRoot, decodedPath);
@@ -67,7 +67,7 @@ public class FileController : PerpendicularityController
             return BadRequest("At least one file path must be provided.");
         }
 
-        var desiredRoot = (await mediator.RequestResponseAsync(new GetDirectoryConfigurationsQuery(RegisteredUser.Key)))
+        var desiredRoot = (await mediator.RequestResponseAsync(new GetDownloadDirectoryConfigurationsQuery(RegisteredUser.Key)))
             .Single(config => config.Alias == request.RootDirectory);
 
         var query = new GetFilesAsZipQuery(RegisteredUser.Key, desiredRoot, request.FilePaths);
@@ -88,5 +88,48 @@ public class FileController : PerpendicularityController
 
         // Use a callback to delete the temp file after the response is sent
         return File(fileStream, "application/zip", zipInfo.FileName, enableRangeProcessing: false);
+    }
+
+    [HttpGet("upload-directory")]
+    public async Task<ActionResult<IEnumerable<string>>> GetUploadAliases()
+    {
+        var result = await mediator.RequestResponseAsync(new GetUploadDirectoryConfigurationsQuery(RegisteredUser.Key));
+        return Ok(result.Select(config => config.Alias));
+    }
+
+    [HttpPost("upload/{rootDirectory}")]
+    [HttpPost("upload/{rootDirectory}/{**relativePath}")]
+    public async Task<IActionResult> UploadFile(string rootDirectory, IFormFile file, string? relativePath = "")
+    {
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest("No file provided or file is empty.");
+        }
+
+        var decodedPath = string.IsNullOrEmpty(relativePath) ? string.Empty : Uri.UnescapeDataString(relativePath);
+
+        var desiredRoot = (await mediator.RequestResponseAsync(new GetUploadDirectoryConfigurationsQuery(RegisteredUser.Key)))
+            .Single(config => config.Alias == rootDirectory);
+
+        // Combine the relative path with the filename
+        var fullRelativePath = string.IsNullOrEmpty(decodedPath)
+            ? file.FileName
+            : Path.Combine(decodedPath, file.FileName);
+
+        using (var stream = file.OpenReadStream())
+        {
+            var command = new UploadFileCommand(
+                RegisteredUser.Key,
+                desiredRoot,
+                fullRelativePath,
+                stream,
+                file.FileName,
+                file.Length
+            );
+
+            await mediator.ExecuteCommandAsync(command);
+        }
+
+        return Ok(new { message = "File uploaded successfully", fileName = file.FileName, size = file.Length });
     }
 }
