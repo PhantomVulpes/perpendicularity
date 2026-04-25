@@ -138,6 +138,58 @@
                     severity="primary"
                   />
                 </div>
+
+                <!-- Download Metrics Section -->
+                <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold flex items-center gap-2">
+                      <i class="pi pi-download text-primary"></i>
+                      Download History
+                    </h3>
+                    <Button
+                      :icon="showDownloads ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+                      @click="showDownloads = !showDownloads"
+                      text
+                      rounded
+                      severity="secondary"
+                      v-tooltip.top="showDownloads ? 'Collapse' : 'Expand'"
+                    />
+                  </div>
+
+                  <div v-if="showDownloads">
+                    <div v-if="userProfile.downloadMetrics && userProfile.downloadMetrics.length > 0">
+                      <DataTable 
+                        :value="userProfile.downloadMetrics" 
+                        class="p-datatable-sm"
+                        stripedRows
+                        :paginator="userProfile.downloadMetrics.length > 10"
+                        :rows="10"
+                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
+                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} downloads"
+                      >
+                        <Column field="path" header="Path" sortable>
+                          <template #body="slotProps">
+                            <code class="text-sm">{{ slotProps.data.path }}</code>
+                          </template>
+                        </Column>
+                        <Column field="sizeBytes" header="Size" sortable>
+                          <template #body="slotProps">
+                            {{ formatBytes(slotProps.data.sizeBytes) }}
+                          </template>
+                        </Column>
+                        <Column field="downloadDate" header="Download Date" sortable>
+                          <template #body="slotProps">
+                            {{ formatDate(slotProps.data.downloadDate) }}
+                          </template>
+                        </Column>
+                      </DataTable>
+                    </div>
+                    <div v-else class="text-center py-8 text-gray-500 dark:text-gray-400">
+                      <i class="pi pi-inbox text-4xl mb-4"></i>
+                      <p>No downloads recorded yet.</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </template>
@@ -170,6 +222,8 @@ import Password from 'primevue/password'
 import Dropdown from 'primevue/dropdown'
 import Message from 'primevue/message'
 import Tag from 'primevue/tag'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
 import { useAuth } from '@/services/auth'
 import { UserStatus, RegisteredUser } from '@/api/apiclients/Perpendicularity/PerpendicularityApiClient'
 import { getUserByKey } from '@/api/User/GetUserByKeyQuery'
@@ -187,6 +241,7 @@ const userProfile = ref<RegisteredUser | null>(null)
 const errorMessage = ref('')
 const successMessage = ref('')
 const editMode = ref(false)
+const showDownloads = ref(false)
 const editForm = ref({
   firstName: '',
   lastName: '',
@@ -357,6 +412,17 @@ const getUserStatusSeverity = (status: UserStatus | undefined): 'secondary' | 'i
     case UserStatus.Admin: return 'info'
     default: return 'secondary'
   }
+}
+
+// Format bytes to human-readable size
+const formatBytes = (bytes?: number) => {
+  if (!bytes || bytes === 0) return '0 Bytes'
+  
+  const k = 1024
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  
+  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
 }
 
 // Go back to previous page

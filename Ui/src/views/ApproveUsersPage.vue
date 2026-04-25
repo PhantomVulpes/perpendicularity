@@ -46,7 +46,9 @@
                   :value="users" 
                   stripedRows
                   class="p-datatable-sm"
+                  v-model:expandedRows="expandedRows"
                 >
+                  <Column expander style="width: 3rem" />
                   <Column header="" style="width: 3rem">
                     <template #body="slotProps">
                       <Button
@@ -109,6 +111,41 @@
                       <span v-else class="text-gray-500 dark:text-gray-400">-</span>
                     </template>
                   </Column>
+                  <template #expansion="slotProps">
+                    <div class="p-4 bg-gray-50 dark:bg-gray-800">
+                      <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                        <i class="pi pi-download"></i>
+                        Download Metrics
+                      </h3>
+                      <div v-if="slotProps.data.downloadMetrics && slotProps.data.downloadMetrics.length > 0">
+                        <DataTable 
+                          :value="slotProps.data.downloadMetrics" 
+                          class="p-datatable-sm"
+                          stripedRows
+                        >
+                          <Column field="path" header="Path" sortable>
+                            <template #body="metricSlot">
+                              <code class="text-sm">{{ metricSlot.data.path }}</code>
+                            </template>
+                          </Column>
+                          <Column field="sizeBytes" header="Size" sortable>
+                            <template #body="metricSlot">
+                              {{ formatBytes(metricSlot.data.sizeBytes) }}
+                            </template>
+                          </Column>
+                          <Column field="downloadDate" header="Download Date" sortable>
+                            <template #body="metricSlot">
+                              {{ formatDate(metricSlot.data.downloadDate) }}
+                            </template>
+                          </Column>
+                        </DataTable>
+                      </div>
+                      <div v-else class="text-center py-4 text-gray-500 dark:text-gray-400">
+                        <i class="pi pi-inbox text-2xl mb-2"></i>
+                        <p>No downloads recorded for this user.</p>
+                      </div>
+                    </div>
+                  </template>
                 </DataTable>
               </div>
 
@@ -181,6 +218,7 @@ const successMessage = ref('')
 const errorMessage = ref('')
 const approvingUserId = ref<string | null>(null)
 const rejectingUserId = ref<string | null>(null)
+const expandedRows = ref<Array<RegisteredUser>>([])
 
 // Load users on mount
 onMounted(() => {
@@ -280,6 +318,17 @@ const copyToClipboard = async (text?: string) => {
 }
 
 // Get user status label
+
+// Format bytes to human-readable size
+const formatBytes = (bytes?: number) => {
+  if (!bytes || bytes === 0) return '0 Bytes'
+  
+  const k = 1024
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  
+  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
+}
 const getUserStatusLabel = (status?: UserStatus) => {
   switch (status) {
     case UserStatus.Unknown: return 'Unknown'
