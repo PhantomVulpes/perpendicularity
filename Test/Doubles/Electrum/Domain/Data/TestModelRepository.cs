@@ -1,4 +1,5 @@
 using Vulpes.Electrum.Domain.Data;
+using Vulpes.Electrum.Domain.Exceptions;
 using Vulpes.Electrum.Domain.Extensions;
 using Vulpes.Electrum.Domain.Models;
 using Vulpes.Electrum.Domain.Validation;
@@ -24,7 +25,14 @@ public class TestModelRepository<TAggregateRoot> : IModelRepository<TAggregateRo
         return Task.CompletedTask;
     }
 
-    public Task<TAggregateRoot> GetAsync(Guid key) => Entries[key].FromResult();
+    public Task<TAggregateRoot> GetAsync(Guid key)
+    {
+        if (!Entries.TryGetValue(key, out var entry))
+        {
+            throw new PerhapsNotFoundException(typeof(TAggregateRoot));
+        }
+        return entry.FromResult();
+    }
     public Task InsertAsync(InsertModel<TAggregateRoot> insertRecord)
     {
         var entry = insertRecord.Value;

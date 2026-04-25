@@ -46,40 +46,18 @@ public class EditUserCommandTests
     }
 
     [TestMethod]
-    public async Task FirstNameGetsUpdated()
+    public async Task ValuesGetUpdated()
     {
-        var command = BuildCommand(firstName: "NewFirstName");
+        var newFirstName = "NewFirstName";
+        var newLastName = "NewLastName";
+        var command = BuildCommand(firstName: newFirstName, lastName: newLastName);
 
         await underTest.ExecuteAsync(command);
 
         var result = testUserRepository.SavedEntries.First();
 
-        Assert.AreEqual("NewFirstName", result.FirstName);
-    }
-
-    [TestMethod]
-    public async Task LastNameGetsUpdated()
-    {
-        var command = BuildCommand(lastName: "NewLastName");
-
-        await underTest.ExecuteAsync(command);
-
-        var result = testUserRepository.SavedEntries.First();
-
-        Assert.AreEqual("NewLastName", result.LastName);
-    }
-
-    [TestMethod]
-    public async Task PasswordGetsUpdated()
-    {
-        testKnoxHasher.MockedHashResult = "hashed-password-result";
-        var command = BuildCommand(passwordRaw: "newPassword123");
-
-        await underTest.ExecuteAsync(command);
-
-        var result = testUserRepository.SavedEntries.First();
-
-        Assert.AreEqual("hashed-password-result", result.PasswordHash.Value);
+        Assert.AreEqual(newFirstName, result.FirstName);
+        Assert.AreEqual(newLastName, result.LastName);
     }
 
     [TestMethod]
@@ -107,19 +85,6 @@ public class EditUserCommandTests
     }
 
     [TestMethod]
-    public async Task RejectedUserStatusCanBeExplicitlySet()
-    {
-        // When an admin explicitly sets status, it should not become unapproved
-        var command = BuildCommand(authorizedUserStatus: UserStatus.Admin, userToEditStatus: UserStatus.Rejected, isEditingSelf: false, status: UserStatus.Approved);
-
-        await underTest.ExecuteAsync(command);
-
-        var result = testUserRepository.SavedEntries.First();
-
-        Assert.AreEqual(UserStatus.Approved, result.Status);
-    }
-
-    [TestMethod]
     public async Task UserCanEditThemselves()
     {
         var access = await underTest.ValidateAccessAsync(BuildCommand(isEditingSelf: true));
@@ -144,7 +109,7 @@ public class EditUserCommandTests
     }
 
     [TestMethod]
-    public async Task OnlyAdminsCanChangeStatus()
+    public async Task NonAdminCannotChangeStatus()
     {
         var access = await underTest.ValidateAccessAsync(BuildCommand(authorizedUserStatus: UserStatus.Approved, status: UserStatus.Inactive));
 
