@@ -7,7 +7,10 @@ namespace Vulpes.Perpendicularity.Core.Models;
 public record ExternalProject : AggregateRoot
 {
     public static ExternalProject Empty { get; } = new();
-    public static ExternalProject Default => Empty;
+    public static ExternalProject Default => Empty with
+    {
+        Key = Guid.NewGuid()
+    };
 
     public string ProjectName { get; init; } = string.Empty;
     public string ProjectUri { get; init; } = string.Empty;

@@ -36,7 +36,7 @@ public class ExternalProjectController : PerpendicularityController
         var command = request.ToCommand(RegisteredUser);
         await mediator.ExecuteCommandAsync(command);
 
-        return Ok(command.Key.ToString());
+        return Ok(command.ProjectKey.ToString());
     }
 
     [HttpDelete("{projectKey}")]

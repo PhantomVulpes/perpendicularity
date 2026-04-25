@@ -1,12 +1,11 @@
 using Vulpes.Electrum.Domain.Commanding;
 using Vulpes.Electrum.Domain.Data;
-using Vulpes.Electrum.Domain.Extensions;
 using Vulpes.Electrum.Domain.Security;
 using Vulpes.Perpendicularity.Core.Models;
 
 namespace Vulpes.Perpendicularity.Core.Commands;
 
-public record AddExternalProjectCommand(Guid Key, string ProjectName, string ProjectUri, string Tooltip, Guid UserKey) : Command;
+public record AddExternalProjectCommand(Guid ProjectKey, string ProjectName, string ProjectUri, string Tooltip, Guid UserKey) : Command;
 public class AddExternalProjectCommandHandler : CommandHandler<AddExternalProjectCommand>
 {
     private readonly IModelRepository<ExternalProject> externalProjectRepository;
@@ -22,7 +21,7 @@ public class AddExternalProjectCommandHandler : CommandHandler<AddExternalProjec
     {
         var newExternalProject = ExternalProject.Default with
         {
-            Key = command.Key,
+            Key = command.ProjectKey,
             ProjectName = command.ProjectName,
             ProjectUri = command.ProjectUri,
             Tooltip = command.Tooltip,
