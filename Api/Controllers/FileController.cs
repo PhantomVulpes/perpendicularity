@@ -99,6 +99,8 @@ public class FileController : PerpendicularityController
 
     [HttpPost("upload/{rootDirectory}")]
     [HttpPost("upload/{rootDirectory}/{**relativePath}")]
+    [DisableRequestSizeLimit]
+    [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue, ValueLengthLimit = int.MaxValue)]
     public async Task<IActionResult> UploadFile(string rootDirectory, IFormFile file, string? relativePath = "")
     {
         if (file == null || file.Length == 0)
