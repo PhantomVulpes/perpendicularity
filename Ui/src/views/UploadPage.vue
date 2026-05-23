@@ -66,7 +66,6 @@
                   mode="basic"
                   name="file"
                   :auto="false"
-                  :maxFileSize="1073741824"
                   :disabled="uploading"
                   @select="onFileSelect"
                   chooseLabel="Choose File"
